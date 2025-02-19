@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 import {
+  authenticatedProcedure,
   createTRPCRouter,
   publicProcedure,
-  authenticatedProcedure,
 } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 
