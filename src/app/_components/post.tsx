@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { toast } from "sonner";
 import { api } from "~/trpc/react";
 
 export function LatestPost() {
@@ -15,7 +15,7 @@ export function LatestPost() {
       setName("");
     },
     onError: (error) => {
-      console.error(error);
+      toast.error(error.message);
     },
   });
 
