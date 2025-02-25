@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={lora.className}>
+      <html lang="en" className={`pencraft-dark ${lora.className}`}>
         <body>
           <TRPCReactProvider>
             <SignedOut>
