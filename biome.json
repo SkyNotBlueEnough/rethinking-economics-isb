@@ -1,7 +1,7 @@
 {
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["node_modules", ".next", "drizzle"]
+    "ignore": ["node_modules", ".next", "drizzle", "src/components/ui/"]
   },
   "linter": {
     "enabled": true,
