@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
-import { SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import { Button } from "~/components/ui/button";
 import {
   Sheet,
@@ -21,6 +21,8 @@ import {
 } from "~/components/ui/accordion";
 import { cn } from "~/lib/utils";
 import { navigationLinks } from "./navigationLinks";
+import { MobileUserMenu } from "~/components/ui/mobile-user-menu";
+import { Separator } from "~/components/ui/separator";
 
 export function MobileMenu() {
   const pathname = usePathname();
@@ -40,6 +42,14 @@ export function MobileMenu() {
           <SheetTitle>Rethinking Economics</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-4 py-4">
+          {/* User menu at the top when signed in */}
+          {isSignedIn && (
+            <>
+              <MobileUserMenu onItemClick={() => setOpen(false)} />
+              <Separator className="my-2" />
+            </>
+          )}
+
           <nav className="flex flex-col gap-2">
             {navigationLinks.map((link) => (
               <React.Fragment key={link.title}>
@@ -99,24 +109,20 @@ export function MobileMenu() {
               </React.Fragment>
             ))}
           </nav>
-          <div className="mt-4 flex flex-col gap-2">
-            {!isSignedIn ? (
-              <>
-                <SignInButton>
-                  <Button variant="secondary" className="w-full">
-                    Sign In
-                  </Button>
-                </SignInButton>
-                <SignUpButton>
-                  <Button className="w-full">Sign Up</Button>
-                </SignUpButton>
-              </>
-            ) : (
-              <div className="flex justify-center">
-                <UserButton afterSignOutUrl="/" />
-              </div>
-            )}
-          </div>
+
+          {/* Sign in/up buttons when not signed in */}
+          {!isSignedIn && (
+            <div className="mt-4 flex flex-col gap-2">
+              <SignInButton>
+                <Button variant="secondary" className="w-full">
+                  Sign In
+                </Button>
+              </SignInButton>
+              <SignUpButton>
+                <Button className="w-full">Sign Up</Button>
+              </SignUpButton>
+            </div>
+          )}
         </div>
       </SheetContent>
     </Sheet>

@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import { SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
+import { UserMenu } from "~/components/ui/user-menu";
 
 export function HeaderTopBar() {
   const { isSignedIn } = useAuth();
@@ -41,7 +42,7 @@ export function HeaderTopBar() {
               </SignUpButton>
             </div>
           ) : (
-            <UserButton />
+            <UserMenu />
           )}
         </div>
       </div>
