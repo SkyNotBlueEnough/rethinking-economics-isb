@@ -31,7 +31,10 @@ export function UserMenu() {
           className="flex items-center gap-2 rounded-full p-1 transition-all hover:bg-accent"
         >
           <Avatar className="h-9 w-9 cursor-pointer">
-            <AvatarImage src={user.imageUrl} alt={user.fullName || "User"} />
+            <AvatarImage
+              src={profile?.avatar || user.imageUrl}
+              alt={profile?.name || user.fullName || "User"}
+            />
             <AvatarFallback>
               {user.firstName?.[0] ||
                 user.emailAddresses[0]?.emailAddress?.[0] ||
@@ -40,10 +43,12 @@ export function UserMenu() {
           </Avatar>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent>
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <div className="text-sm font-medium">{user.fullName || "User"}</div>
+            <div className="text-sm font-medium">
+              {profile?.name || user.fullName || "User"}
+            </div>
             <div className="text-xs text-muted-foreground">
               {user.primaryEmailAddress?.emailAddress}
             </div>

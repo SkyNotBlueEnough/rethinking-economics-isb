@@ -5,7 +5,6 @@ import { useUserProfile } from "~/hooks/useUserProfile";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useUser } from "@clerk/nextjs";
 import { ArrowLeftIcon, SaveIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,6 +12,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { toast } from "sonner";
+import { AvatarUploader } from "~/components/avatar-uploader";
 
 export default function EditProfilePage() {
   const { profile, isLoading, updateProfile, isUpdating } = useUserProfile();
@@ -23,6 +23,7 @@ export default function EditProfilePage() {
     name: "",
     position: "",
     bio: "",
+    avatar: "",
   });
 
   // Initialize form data when profile is loaded
@@ -32,6 +33,7 @@ export default function EditProfilePage() {
         name: profile.name || "",
         position: profile.position || "",
         bio: profile.bio || "",
+        avatar: profile.avatar || "",
       });
     }
   }, [profile]);
@@ -101,19 +103,12 @@ export default function EditProfilePage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="flex justify-center">
-              <Avatar className="h-24 w-24">
-                <AvatarImage
-                  src={user?.imageUrl}
-                  alt={user?.fullName || "User"}
-                />
-                <AvatarFallback>
-                  {user?.firstName?.[0] ||
-                    user?.emailAddresses[0]?.emailAddress?.[0] ||
-                    "U"}
-                </AvatarFallback>
-              </Avatar>
-            </div>
+            <AvatarUploader
+              initialAvatarUrl={profile?.avatar ?? undefined}
+              onUploadComplete={(url) => {
+                setFormData((prev) => ({ ...prev, avatar: url }));
+              }}
+            />
 
             <div className="space-y-4">
               <div className="space-y-2">

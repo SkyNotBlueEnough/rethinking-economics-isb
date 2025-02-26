@@ -27,7 +27,10 @@ export function MobileUserMenu({ onItemClick }: { onItemClick?: () => void }) {
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-2">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={user.imageUrl} alt={user.fullName || "User"} />
+          <AvatarImage
+            src={profile?.avatar || user.imageUrl}
+            alt={profile?.name || user.fullName || "User"}
+          />
           <AvatarFallback>
             {user.firstName?.[0] ||
               user.emailAddresses[0]?.emailAddress?.[0] ||
@@ -35,7 +38,9 @@ export function MobileUserMenu({ onItemClick }: { onItemClick?: () => void }) {
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <div className="font-medium">{user.fullName || "User"}</div>
+          <div className="font-medium">
+            {profile?.name || user.fullName || "User"}
+          </div>
           <div className="text-xs text-muted-foreground">
             {user.primaryEmailAddress?.emailAddress}
           </div>

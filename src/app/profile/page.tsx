@@ -53,8 +53,8 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center space-y-6">
             <Avatar className="h-24 w-24">
               <AvatarImage
-                src={user?.imageUrl}
-                alt={user?.fullName || "User"}
+                src={profile?.avatar || user?.imageUrl}
+                alt={profile?.name || user?.fullName || "User"}
               />
               <AvatarFallback>
                 {user?.firstName?.[0] ||
