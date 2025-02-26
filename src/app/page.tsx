@@ -33,11 +33,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { toast } from "sonner";
-import { Header } from "./_components/header";
+import { HeaderTopBar } from "./_components/Header/HeaderTopBar";
 export default function Home() {
-  return (
-    <div>
-      <Header />
-    </div>
-  );
+  return <div>test</div>;
 }

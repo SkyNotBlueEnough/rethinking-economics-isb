@@ -11,6 +11,7 @@ import type { Metadata } from "next";
 import { Lora } from "next/font/google";
 import { Toaster } from "sonner";
 import { TRPCReactProvider } from "~/trpc/react";
+import MainHeader from "./_components/Header/MainHeader";
 
 const lora = Lora({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -26,7 +27,10 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en" className={`pencraft-dark ${lora.className}`}>
         <body>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <MainHeader />
+            {children}
+          </TRPCReactProvider>
           <Toaster />
         </body>
       </html>

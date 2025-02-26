@@ -3,13 +3,17 @@ import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-export function Header() {
+import MobileMenu from "./MobileMenu";
+
+export function HeaderTopBar() {
   const { isSignedIn } = useAuth();
 
   return (
     <header className="w-full border-b">
       <div className="flex h-20 flex-row items-center px-4 md:px-6">
-        <div className="flex-1" />
+        <div className="flex md:hidden">
+          <MobileMenu />
+        </div>
 
         <Link href="/" className="absolute left-1/2 -translate-x-1/2">
           <div className="flex items-center gap-2 self-center">
@@ -20,11 +24,13 @@ export function Header() {
               height={50}
               className="object-contain"
             />
-            <div className="text-2xl font-semibold">Rethinking Economics</div>
+            <div className="text-xs font-semibold md:text-2xl">
+              Rethinking Economics
+            </div>
           </div>
         </Link>
 
-        <div className="flex flex-1 justify-end">
+        <div className="hidden flex-1 justify-end md:flex">
           {!isSignedIn ? (
             <div className="flex gap-2">
               <SignInButton>
