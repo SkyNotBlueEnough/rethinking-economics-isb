@@ -3,13 +3,12 @@ import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-
 export function Header() {
   const { isSignedIn } = useAuth();
 
   return (
     <header className="w-full border-b">
-      <div className="flex h-16 flex-row items-center px-4 md:px-6">
+      <div className="flex h-20 flex-row items-center px-4 md:px-6">
         <div className="flex-1" />
 
         <Link href="/" className="absolute left-1/2 -translate-x-1/2">
@@ -29,7 +28,7 @@ export function Header() {
           {!isSignedIn ? (
             <div className="flex gap-2">
               <SignInButton>
-                <Button variant="ghost">Sign In</Button>
+                <Button variant="secondary">Sign In</Button>
               </SignInButton>
               <SignUpButton>
                 <Button>Sign Up</Button>
