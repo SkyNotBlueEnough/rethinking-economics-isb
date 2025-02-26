@@ -41,6 +41,17 @@ export const profiles = createTable("profile", {
   ),
 });
 
+export const profilesRelations = relations(profiles, ({ many }) => ({
+  memberships: many(memberships),
+  authoredPublications: many(publications, { relationName: "author" }),
+  coAuthoredPublications: many(publicationCoAuthors, {
+    relationName: "coAuthor",
+  }),
+  policies: many(policies),
+  caseStudies: many(caseStudies),
+  eventRegistrations: many(eventRegistrations),
+}));
+
 // =========== MEMBERSHIPS ===========
 export const membershipTypes = createTable("membership_type", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -49,6 +60,13 @@ export const membershipTypes = createTable("membership_type", {
   benefits: text("benefits", { length: 1000 }),
   requiresApproval: int("requires_approval", { mode: "boolean" }).default(true),
 });
+
+export const membershipTypesRelations = relations(
+  membershipTypes,
+  ({ many }) => ({
+    memberships: many(memberships),
+  }),
+);
 
 export const memberships = createTable("membership", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -71,6 +89,17 @@ export const memberships = createTable("membership", {
   ),
 });
 
+export const membershipsRelations = relations(memberships, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [memberships.userId],
+    references: [profiles.id],
+  }),
+  membershipType: one(membershipTypes, {
+    fields: [memberships.membershipTypeId],
+    references: [membershipTypes.id],
+  }),
+}));
+
 // =========== CONTENT CATEGORIES ===========
 
 export const categories = createTable(
@@ -92,6 +121,10 @@ export const categories = createTable(
   }),
 );
 
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  publicationCategories: many(publicationCategories),
+}));
+
 // =========== TAGS ===========
 export const tags = createTable(
   "tag",
@@ -104,6 +137,10 @@ export const tags = createTable(
     slugIdx: unique("tag_slug_idx").on(table.slug),
   }),
 );
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  publicationTags: many(publicationTags),
+}));
 
 // =========== PUBLICATIONS ===========
 export const publications = createTable(
@@ -137,6 +174,20 @@ export const publications = createTable(
   }),
 );
 
+export const publicationsRelations = relations(
+  publications,
+  ({ one, many }) => ({
+    author: one(profiles, {
+      fields: [publications.authorId],
+      references: [profiles.id],
+      relationName: "author",
+    }),
+    categories: many(publicationCategories),
+    tags: many(publicationTags),
+    coAuthors: many(publicationCoAuthors),
+  }),
+);
+
 // Publication-Category relationship
 export const publicationCategories = createTable(
   "publication_category",
@@ -146,6 +197,20 @@ export const publicationCategories = createTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.publicationId, table.categoryId] }),
+  }),
+);
+
+export const publicationCategoriesRelations = relations(
+  publicationCategories,
+  ({ one }) => ({
+    publication: one(publications, {
+      fields: [publicationCategories.publicationId],
+      references: [publications.id],
+    }),
+    category: one(categories, {
+      fields: [publicationCategories.categoryId],
+      references: [categories.id],
+    }),
   }),
 );
 
@@ -161,6 +226,20 @@ export const publicationTags = createTable(
   }),
 );
 
+export const publicationTagsRelations = relations(
+  publicationTags,
+  ({ one }) => ({
+    publication: one(publications, {
+      fields: [publicationTags.publicationId],
+      references: [publications.id],
+    }),
+    tag: one(tags, {
+      fields: [publicationTags.tagId],
+      references: [tags.id],
+    }),
+  }),
+);
+
 // Co-authors for publications
 export const publicationCoAuthors = createTable(
   "publication_co_author",
@@ -171,6 +250,21 @@ export const publicationCoAuthors = createTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.publicationId, table.authorId] }),
+  }),
+);
+
+export const publicationCoAuthorsRelations = relations(
+  publicationCoAuthors,
+  ({ one }) => ({
+    publication: one(publications, {
+      fields: [publicationCoAuthors.publicationId],
+      references: [publications.id],
+    }),
+    author: one(profiles, {
+      fields: [publicationCoAuthors.authorId],
+      references: [profiles.id],
+      relationName: "coAuthor",
+    }),
   }),
 );
 
@@ -205,6 +299,11 @@ export const events = createTable(
   }),
 );
 
+export const eventsRelations = relations(events, ({ many }) => ({
+  registrations: many(eventRegistrations),
+  media: many(eventMedia),
+}));
+
 // Event registrations
 export const eventRegistrations = createTable("event_registration", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -221,6 +320,20 @@ export const eventRegistrations = createTable("event_registration", {
     .notNull(),
 });
 
+export const eventRegistrationsRelations = relations(
+  eventRegistrations,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventRegistrations.eventId],
+      references: [events.id],
+    }),
+    profile: one(profiles, {
+      fields: [eventRegistrations.userId],
+      references: [profiles.id],
+    }),
+  }),
+);
+
 // Event media (photos, videos, etc.)
 export const eventMedia = createTable("event_media", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -234,6 +347,13 @@ export const eventMedia = createTable("event_media", {
     .default(sql`(unixepoch())`)
     .notNull(),
 });
+
+export const eventMediaRelations = relations(eventMedia, ({ one }) => ({
+  event: one(events, {
+    fields: [eventMedia.eventId],
+    references: [events.id],
+  }),
+}));
 
 // =========== POLICY & ADVOCACY ===========
 export const policies = createTable(
@@ -262,6 +382,14 @@ export const policies = createTable(
   }),
 );
 
+export const policiesRelations = relations(policies, ({ one, many }) => ({
+  author: one(profiles, {
+    fields: [policies.authorId],
+    references: [profiles.id],
+  }),
+  caseStudies: many(caseStudies),
+}));
+
 // Policy case studies
 export const caseStudies = createTable(
   "case_study",
@@ -289,6 +417,17 @@ export const caseStudies = createTable(
     slugIdx: unique("case_study_slug_idx").on(table.slug),
   }),
 );
+
+export const caseStudiesRelations = relations(caseStudies, ({ one }) => ({
+  policy: one(policies, {
+    fields: [caseStudies.policyId],
+    references: [policies.id],
+  }),
+  author: one(profiles, {
+    fields: [caseStudies.authorId],
+    references: [profiles.id],
+  }),
+}));
 
 // =========== MEDIA & PRESS ===========
 export const pressReleases = createTable(
