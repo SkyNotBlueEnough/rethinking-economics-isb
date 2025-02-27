@@ -1,16 +1,14 @@
 {
-  "files": {
-    "ignoreUnknown": false,
-    "ignore": ["node_modules", ".next", "drizzle", "src/components/ui/"]
-  },
   "linter": {
-    "enabled": true,
     "rules": {
-      "recommended": true
+      "suspicious": {
+        "noDebugger": "off",
+        "noConsoleLog": "info"
+      },
+      "style": {
+        "noShoutyConstants": "off",
+        "useNamingConvention": "off"
+      }
     }
-  },
-  "formatter": {
-    "enabled": true,
-    "useEditorconfig": true
   }
 }
