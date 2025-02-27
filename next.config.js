@@ -7,7 +7,14 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["substack-post-media.s3.amazonaws.com", "substackcdn.com"],
+    remotePatterns: [
+      {
+        hostname: "substack-post-media.s3.amazonaws.com",
+      },
+      {
+        hostname: "substackcdn.com",
+      },
+    ],
   },
 };
 

@@ -17,7 +17,7 @@ export const ourFileRouter = {
       const { userId } = getAuth(req);
 
       // If you throw, the user will not be able to upload
-      if (!userId) throw new UploadThingError("Unauthorized");
+      if (!userId) throw new Error("Unauthorized");
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { userId };

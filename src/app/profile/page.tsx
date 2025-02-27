@@ -53,12 +53,12 @@ export default function ProfilePage() {
           <div className="flex flex-col items-center space-y-6">
             <Avatar className="h-24 w-24">
               <AvatarImage
-                src={profile?.avatar || user?.imageUrl}
-                alt={profile?.name || user?.fullName || "User"}
+                src={profile?.avatar ?? user?.imageUrl}
+                alt={profile?.name ?? user?.fullName ?? "User"}
               />
               <AvatarFallback>
-                {user?.firstName?.[0] ||
-                  user?.emailAddresses[0]?.emailAddress?.[0] ||
+                {user?.firstName?.[0] ??
+                  user?.emailAddresses[0]?.emailAddress?.[0] ??
                   "U"}
               </AvatarFallback>
             </Avatar>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
             <div className="text-muted-foreground">{profile?.position}</div>
             <div className="w-full rounded-lg bg-muted p-4">
               <div className="text-sm">
-                {profile?.bio || "No bio information provided."}
+                {profile?.bio ?? "No bio information provided."}
               </div>
             </div>
           </div>

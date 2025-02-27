@@ -3,12 +3,16 @@
 import { api } from "~/trpc/react";
 import { MobileView } from "~/components/home/mobile-view";
 import {
-  FeaturedArticlesSection,
   LeftColumnArticles,
   CenterArticle,
 } from "~/components/home/featured-articles-section";
 import { PopularArticlesSection } from "~/components/home/popular-articles-section";
-import type { PublicationsWithAuthor } from "~/lib/types/publications";
+import { PublicationTypeSection } from "~/components/home/publication-type-section";
+import type {
+  PublicationsWithAuthor,
+  PublicationTypesWithCount,
+  PublicationType,
+} from "~/lib/types/publications";
 
 export default function Home() {
   // Fetch featured and popular publications
@@ -17,9 +21,24 @@ export default function Home() {
   const { data: popularPublications = [] } =
     api.publications.getPopular.useQuery<PublicationsWithAuthor>();
 
+  // Fetch all publication types with their counts
+  const { data: publicationTypes = [] } =
+    api.publications.getAllTypes.useQuery<PublicationTypesWithCount>();
+
   // Split featured publications for desktop view
   const leftColumnArticles = featuredPublications.slice(0, 2);
   const centerArticle = featuredPublications[2];
+
+  // Define the publication types we want to display
+  // We'll use the predefined types rather than relying on the API response
+  // to ensure a consistent order and display
+  const typesToDisplay: Array<{ type: PublicationType; displayName: string }> =
+    [
+      { type: "research_paper", displayName: "Research Papers" },
+      { type: "policy_brief", displayName: "Policy Briefs" },
+      { type: "opinion", displayName: "Opinion Pieces" },
+      { type: "blog_post", displayName: "Blog Posts" },
+    ];
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -29,24 +48,35 @@ export default function Home() {
         popularArticles={popularPublications}
       />
 
-      {/* Desktop View */}
+      {/* Desktop View - Featured and Popular */}
       <div className="hidden lg:block">
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-12 divide-x">
           {/* Left Column - Two Featured Articles */}
-          <div className="col-span-3">
+          <div className="col-span-3 px-3">
             <LeftColumnArticles articles={leftColumnArticles} />
           </div>
 
           {/* Center Column - Large Featured Article */}
-          <div className="col-span-6">
+          <div className="col-span-6 px-3">
             <CenterArticle article={centerArticle} />
           </div>
 
           {/* Right Column - Most Popular */}
-          <div className="col-span-3">
+          <div className="col-span-3 px-3">
             <PopularArticlesSection articles={popularPublications} />
           </div>
         </div>
+      </div>
+
+      {/* Publication Type Sections */}
+      <div className="mt-16 space-y-16">
+        {typesToDisplay.map((typeInfo) => (
+          <PublicationTypeSection
+            key={typeInfo.type}
+            type={typeInfo.type}
+            displayName={typeInfo.displayName}
+          />
+        ))}
       </div>
     </div>
   );

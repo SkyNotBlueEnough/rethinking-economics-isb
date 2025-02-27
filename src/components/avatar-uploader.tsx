@@ -52,12 +52,12 @@ export function AvatarUploader({
     <div className={`flex flex-col items-center space-y-4 ${className}`}>
       <Avatar className={avatarClassName}>
         <AvatarImage
-          src={avatarUrl || user?.imageUrl}
-          alt={user?.fullName || "User"}
+          src={avatarUrl ?? user?.imageUrl}
+          alt={user?.fullName ?? "User"}
         />
         <AvatarFallback>
-          {user?.firstName?.[0] ||
-            user?.emailAddresses[0]?.emailAddress?.[0] ||
+          {user?.firstName?.[0] ??
+            user?.emailAddresses[0]?.emailAddress?.[0] ??
             "U"}
         </AvatarFallback>
       </Avatar>
@@ -76,7 +76,7 @@ export function AvatarUploader({
               setAvatarUrl(url);
 
               // Invalidate the profile query to refresh the data
-              queryClient.invalidateQueries({ queryKey: ["profile"] });
+              void queryClient.invalidateQueries({ queryKey: ["profile"] });
 
               if (onUploadComplete) {
                 onUploadComplete(url);

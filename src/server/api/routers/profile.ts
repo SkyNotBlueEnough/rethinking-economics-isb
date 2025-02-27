@@ -46,7 +46,7 @@ export const profileRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
 
-      if (!user || !user.id) {
+      if (!user?.id) {
         throw new Error("Not authenticated");
       }
 

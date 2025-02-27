@@ -13,7 +13,7 @@ export function useUserProfile() {
   const updateProfileMutation = api.profile.update.useMutation({
     onSuccess: () => {
       // Invalidate and refetch profile data
-      queryClient.invalidateQueries({ queryKey: ["profile", userId] });
+      void queryClient.invalidateQueries({ queryKey: ["profile", userId] });
     },
   });
 

@@ -30,10 +30,10 @@ export default function EditProfilePage() {
   useEffect(() => {
     if (profile) {
       setFormData({
-        name: profile.name || "",
-        position: profile.position || "",
-        bio: profile.bio || "",
-        avatar: profile.avatar || "",
+        name: profile.name ?? "",
+        position: profile.position ?? "",
+        bio: profile.bio ?? "",
+        avatar: profile.avatar ?? "",
       });
     }
   }, [profile]);
