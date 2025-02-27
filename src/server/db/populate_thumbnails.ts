@@ -10,6 +10,9 @@ const thumbnailUrls = [
   "https://substack-post-media.s3.amazonaws.com/public/images/2ae8ed7a-5b9a-4023-b487-1eb7245482da_1920x1280.png",
   "https://substack-post-media.s3.amazonaws.com/public/images/7333d590-941e-4129-9459-494d7bb9b551_1024x1024.png",
   "https://substack-post-media.s3.amazonaws.com/public/images/b5fadf19-1a74-45da-ad68-6e1cd23b1159_1920x1281.png",
+  "https://substack-post-media.s3.amazonaws.com/public/images/0cf8e6f6-cee1-4793-9c2f-c978b11e195d_940x788.png",
+  "https://substack-post-media.s3.amazonaws.com/public/images/055b20e4-666d-4f6e-87d8-11a60522fa0f_1280x878.jpeg",
+  "https://substack-post-media.s3.amazonaws.com/public/images/585a48dd-4c88-4909-ab5a-1a0ce928f03a_1626x1008.png",
 ];
 
 async function populateThumbnails() {
