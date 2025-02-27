@@ -6,16 +6,19 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-  images: {
-    remotePatterns: [
-      {
-        hostname: "substack-post-media.s3.amazonaws.com",
-      },
-      {
-        hostname: "substackcdn.com",
-      },
-    ],
-  },
+	images: {
+		remotePatterns: [
+			{
+				hostname: "substack-post-media.s3.amazonaws.com",
+			},
+			{
+				hostname: "substackcdn.com",
+			},
+			{
+				hostname: "images.unsplash.com",
+			},
+		],
+	},
 };
 
 export default config;

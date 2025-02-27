@@ -191,14 +191,14 @@ export default function ArticlePage() {
       </div>
 
       {/* Back Button */}
-      <div className="mb-6 flex items-center justify-between">
-        <Button variant="ghost" size="sm" asChild>
+      <div className="mb-6 flex items-center justify-end">
+        {/* <Button variant="ghost" size="sm" asChild>
           <Link href="/publications">
             <ChevronLeft className="mr-2 h-4 w-4" />
             <span className="hidden sm:inline">Back to Publications</span>
             <span className="sm:hidden">Back</span>
           </Link>
-        </Button>
+        </Button> */}
 
         {/* Social Share Buttons */}
         <SocialShareButtons title={article.title} />
