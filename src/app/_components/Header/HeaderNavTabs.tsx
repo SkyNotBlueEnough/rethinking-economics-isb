@@ -20,7 +20,7 @@ export function HeaderNavTabs() {
   const pathname = usePathname();
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="z-50 flex w-full justify-center">
       <NavigationMenu className="max-w-full">
         <NavigationMenuList className="gap-2">
           {navigationLinks.map((link) => (
@@ -37,8 +37,8 @@ export function HeaderNavTabs() {
                   >
                     {link.title}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+                  <NavigationMenuContent className="z-[10000]">
+                    <ul className="z-50 grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                       {link.children.map((child) => (
                         <li key={child.title}>
                           <NavigationMenuLink asChild className="rounded-none">
