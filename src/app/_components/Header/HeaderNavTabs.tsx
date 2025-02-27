@@ -29,7 +29,9 @@ export function HeaderNavTabs() {
                 <>
                   <NavigationMenuTrigger
                     className={cn(
-                      pathname.startsWith(link.href) ? "text-primary" : "",
+                      pathname.startsWith(link.href)
+                        ? "font-bold underline"
+                        : "",
                       "rounded-none",
                     )}
                   >
@@ -70,7 +72,7 @@ export function HeaderNavTabs() {
                     className={cn(
                       navigationMenuTriggerStyle(),
                       "rounded-none",
-                      pathname === link.href ? "text-primary" : "",
+                      pathname === link.href ? "border border-b font-bold" : "",
                     )}
                   >
                     {link.title}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import {
   createTRPCRouter,
   publicProcedure,
@@ -9,7 +9,12 @@ import {
   publications,
   publicationCategories,
   publicationTags,
+  profiles,
 } from "~/server/db/schema";
+import type {
+  PublicationWithAuthor,
+  PublicationsWithAuthor,
+} from "~/lib/types/publications";
 
 export const publicationsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -72,4 +77,48 @@ export const publicationsRouter = createTRPCRouter({
       where: eq(publications.slug, input),
     });
   }),
+
+  getFeatured: publicProcedure.query(
+    async ({ ctx }): Promise<PublicationsWithAuthor> => {
+      return await ctx.db
+        .select({
+          id: publications.id,
+          title: publications.title,
+          slug: publications.slug,
+          thumbnailUrl: publications.thumbnailUrl,
+          publishedAt: publications.publishedAt,
+          author: {
+            id: profiles.id,
+            name: profiles.name,
+          },
+        })
+        .from(publications)
+        .leftJoin(profiles, eq(publications.authorId, profiles.id))
+        .where(eq(publications.status, "published"))
+        .orderBy(desc(publications.featuredOrder))
+        .limit(4);
+    },
+  ),
+
+  getPopular: publicProcedure.query(
+    async ({ ctx }): Promise<PublicationsWithAuthor> => {
+      return await ctx.db
+        .select({
+          id: publications.id,
+          title: publications.title,
+          slug: publications.slug,
+          thumbnailUrl: publications.thumbnailUrl,
+          publishedAt: publications.publishedAt,
+          author: {
+            id: profiles.id,
+            name: profiles.name,
+          },
+        })
+        .from(publications)
+        .leftJoin(profiles, eq(publications.authorId, profiles.id))
+        .where(eq(publications.status, "published"))
+        .orderBy(desc(publications.publishedAt))
+        .limit(6);
+    },
+  ),
 });

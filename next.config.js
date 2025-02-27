@@ -5,6 +5,10 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    domains: ["substack-post-media.s3.amazonaws.com", "substackcdn.com"],
+  },
+};
 
 export default config;
