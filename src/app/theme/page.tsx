@@ -12,7 +12,6 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Calendar } from "~/components/ui/calendar";
 import { Checkbox } from "~/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import {
@@ -169,10 +168,6 @@ export default function Home() {
                       This is a hover card content
                     </HoverCardContent>
                   </HoverCard>
-                </div>
-
-                <div>
-                  <Calendar mode="single" className="rounded-md border" />
                 </div>
               </CardContent>
             </Card>
