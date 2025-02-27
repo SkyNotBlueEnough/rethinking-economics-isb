@@ -188,7 +188,7 @@ export default function PartnershipsPage() {
                     <div className="mt-2 text-sm text-muted-foreground">
                       Partner with us on research projects that explore
                       alternative economic frameworks and their application to
-                      Pakistan's development challenges.
+                      Pakistan&apos;s development challenges.
                     </div>
                   </div>
                   <div>

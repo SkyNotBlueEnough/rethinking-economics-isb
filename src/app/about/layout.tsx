@@ -46,7 +46,7 @@ export default function AboutLayout({ children }: { children: ReactNode }) {
             {aboutTabs.map((tab) => (
               <Link href={tab.href} key={tab.href}>
                 <TabsTrigger
-                  value={tab.href.split("/").pop() || ""}
+                  value={tab.href.split("/").pop() ?? ""}
                   className="min-w-max"
                 >
                   {tab.title}

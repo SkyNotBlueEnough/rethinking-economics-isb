@@ -286,7 +286,7 @@ export default function EventsPage() {
               <div className="text-muted-foreground">
                 Our working groups bring together economists, policymakers, and
                 civil society representatives to develop alternative policy
-                approaches to Pakistan's economic challenges.
+                approaches to Pakistan&apos;s economic challenges.
               </div>
             </CardContent>
           </Card>
@@ -330,7 +330,7 @@ function EventCard({
       <div className="relative aspect-video w-full overflow-hidden">
         <Image
           src={
-            event.imageUrl ||
+            event.imageUrl ??
             "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop"
           }
           alt={event.title}

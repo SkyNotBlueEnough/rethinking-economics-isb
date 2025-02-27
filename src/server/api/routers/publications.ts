@@ -313,5 +313,5 @@ function getPublicationTypeDisplayName(type: string): string {
     blog_post: "Blog Posts",
   };
 
-  return displayNames[type] || type;
+  return displayNames[type] ?? type;
 }

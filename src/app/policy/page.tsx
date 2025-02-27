@@ -400,7 +400,7 @@ function PolicyBriefCard({ brief, formatDate }: PolicyBriefCardProps) {
       <div className="relative aspect-[3/2] w-full overflow-hidden">
         <Image
           src={
-            brief.imageUrl ||
+            brief.imageUrl ??
             "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop"
           }
           alt={brief.title}
@@ -457,7 +457,7 @@ function AdvocacyCampaignCard({ campaign }: { campaign: AdvocacyCampaign }) {
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <Image
           src={
-            campaign.imageUrl ||
+            campaign.imageUrl ??
             "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=800&auto=format&fit=crop"
           }
           alt={campaign.title}

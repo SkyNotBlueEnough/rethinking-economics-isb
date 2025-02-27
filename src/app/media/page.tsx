@@ -358,7 +358,7 @@ function MediaMentionCard({ mention, formatDate }: MediaMentionCardProps) {
       <div className="relative aspect-video w-full overflow-hidden">
         <Image
           src={
-            mention.imageUrl ||
+            mention.imageUrl ??
             "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=300&auto=format&fit=crop"
           }
           alt={mention.title}
@@ -447,7 +447,7 @@ function MediaResourceCard({ resource }: { resource: MediaResource }) {
       <div className="relative aspect-square w-full overflow-hidden">
         <Image
           src={
-            resource.thumbnailUrl ||
+            resource.thumbnailUrl ??
             "https://images.unsplash.com/photo-1586892478025-2b5472316f22?q=80&w=300&auto=format&fit=crop"
           }
           alt={resource.title}

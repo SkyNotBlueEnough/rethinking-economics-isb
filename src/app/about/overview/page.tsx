@@ -39,7 +39,7 @@ export default function OverviewPage() {
                 interdisciplinary approaches to economic theory and policy. We
                 aim to bridge the gap between academic economics and real-world
                 challenges, fostering critical thinking and innovative solutions
-                to Pakistan's economic issues.
+                to Pakistan&apos;s economic issues.
               </div>
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <Card>

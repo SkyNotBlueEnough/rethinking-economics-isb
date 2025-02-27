@@ -163,9 +163,9 @@ export default function TeamPage() {
           <div className="mt-12 rounded-lg bg-muted p-6">
             <div className="text-xl font-semibold">Join Our Team</div>
             <div className="mt-2 text-muted-foreground">
-              We're always looking for passionate individuals to join our
-              mission. If you're interested in contributing to our work, please
-              reach out to us at{" "}
+              We&apos;re always looking for passionate individuals to join our
+              mission. If you&apos;re interested in contributing to our work,
+              please reach out to us at{" "}
               <span className="font-medium">
                 careers@rethinkingeconomics.pk
               </span>
