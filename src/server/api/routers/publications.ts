@@ -76,8 +76,62 @@ export const publicationsRouter = createTRPCRouter({
   getBySlug: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
     return ctx.db.query.publications.findFirst({
       where: eq(publications.slug, input),
+      with: {
+        author: true,
+      },
     });
   }),
+
+  // Get related publications by type or category
+  getRelated: publicProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+        limit: z.number().min(1).max(6).default(3),
+      }),
+    )
+    .query(async ({ ctx, input }): Promise<PublicationsWithAuthor> => {
+      // First, get the current publication to find its type and categories
+      const currentPublication = await ctx.db.query.publications.findFirst({
+        where: eq(publications.slug, input.slug),
+        with: {
+          categories: {
+            with: {
+              category: true,
+            },
+          },
+        },
+      });
+
+      if (!currentPublication) {
+        return [];
+      }
+
+      // Get publications with the same type, excluding the current one
+      return await ctx.db
+        .select({
+          id: publications.id,
+          title: publications.title,
+          slug: publications.slug,
+          thumbnailUrl: publications.thumbnailUrl,
+          publishedAt: publications.publishedAt,
+          author: {
+            id: profiles.id,
+            name: profiles.name,
+          },
+        })
+        .from(publications)
+        .leftJoin(profiles, eq(publications.authorId, profiles.id))
+        .where(
+          and(
+            eq(publications.status, "published"),
+            eq(publications.type, currentPublication.type),
+            sql`${publications.id} != ${currentPublication.id}`,
+          ),
+        )
+        .orderBy(desc(publications.publishedAt))
+        .limit(input.limit);
+    }),
 
   // Get publications by type
   getByType: publicProcedure
