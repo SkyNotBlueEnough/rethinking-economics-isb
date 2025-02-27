@@ -40,6 +40,7 @@ const ContentRenderer = ({ content }: { content: string }) => {
 
   // Using a div with dangerouslySetInnerHTML in a separate component
   // eslint-disable-next-line react/no-danger
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
   return <div dangerouslySetInnerHTML={{ __html: content }} />;
 };
 

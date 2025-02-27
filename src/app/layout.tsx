@@ -1,4 +1,5 @@
 import "~/styles/globals.css";
+import "remixicon/fonts/remixicon.css";
 
 import {
   ClerkProvider,
@@ -12,6 +13,7 @@ import { Lora } from "next/font/google";
 import { Toaster } from "sonner";
 import { TRPCReactProvider } from "~/trpc/react";
 import MainHeader from "./_components/Header/MainHeader";
+import { FooterWrapper } from "~/components/FooterWrapper";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
@@ -40,8 +42,11 @@ export default function RootLayout({
                */
               routerConfig={extractRouterConfig(ourFileRouter)}
             />
-            <MainHeader />
-            {children}
+            <div className="flex min-h-screen flex-col">
+              <MainHeader />
+              <main className="flex-1">{children}</main>
+              <FooterWrapper />
+            </div>
           </TRPCReactProvider>
           <Toaster />
         </body>
