@@ -1,13 +1,13 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import { MobileView } from "~/components/home/mobile-view";
+import { MobileView } from "./components/mobile-view";
 import {
   LeftColumnArticles,
   CenterArticle,
-} from "~/components/home/featured-articles-section";
-import { PopularArticlesSection } from "~/components/home/popular-articles-section";
-import { PublicationTypeSection } from "~/components/home/publication-type-section";
+} from "./components/featured-articles-section";
+import { PopularArticlesSection } from "./components/popular-articles-section";
+import { PublicationTypeSection } from "./components/publication-type-section";
 import type {
   PublicationsWithAuthor,
   PublicationTypesWithCount,
