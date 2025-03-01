@@ -8,6 +8,7 @@ import {
 } from "./components/featured-articles-section";
 import { PopularArticlesSection } from "./components/popular-articles-section";
 import { PublicationTypeSection } from "./components/publication-type-section";
+import { HomePageSkeleton } from "./components/loading-skeletons";
 import type {
   PublicationsWithAuthor,
   PublicationTypesWithCount,
@@ -16,18 +17,31 @@ import type {
 
 export default function Home() {
   // Fetch featured and popular publications
-  const { data: featuredPublications = [] } =
+  const { data: featuredPublications, isLoading: isFeaturedLoading } =
     api.publications.getFeatured.useQuery<PublicationsWithAuthor>();
-  const { data: popularPublications = [] } =
+  const { data: popularPublications, isLoading: isPopularLoading } =
     api.publications.getPopular.useQuery<PublicationsWithAuthor>();
 
   // Fetch all publication types with their counts
-  const { data: publicationTypes = [] } =
+  const { data: publicationTypes, isLoading: isTypesLoading } =
     api.publications.getAllTypes.useQuery<PublicationTypesWithCount>();
 
+  // Check if any data is still loading
+  const isLoading = isFeaturedLoading || isPopularLoading || isTypesLoading;
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return <HomePageSkeleton />;
+  }
+
+  // Ensure we have data to display
+  const featuredPublicationsData = featuredPublications ?? [];
+  const popularPublicationsData = popularPublications ?? [];
+  const publicationTypesData = publicationTypes ?? [];
+
   // Split featured publications for desktop view
-  const leftColumnArticles = featuredPublications.slice(0, 2);
-  const centerArticle = featuredPublications[2];
+  const leftColumnArticles = featuredPublicationsData.slice(0, 2);
+  const centerArticle = featuredPublicationsData[2];
 
   // Define the publication types we want to display
   // We'll use the predefined types rather than relying on the API response
@@ -44,8 +58,8 @@ export default function Home() {
     <div className="container mx-auto px-4 py-6 sm:py-8">
       {/* Mobile View */}
       <MobileView
-        featuredArticles={featuredPublications}
-        popularArticles={popularPublications}
+        featuredArticles={featuredPublicationsData}
+        popularArticles={popularPublicationsData}
       />
 
       {/* Desktop View - Featured and Popular */}
@@ -63,7 +77,7 @@ export default function Home() {
 
           {/* Right Column - Most Popular */}
           <div className="col-span-3 px-3">
-            <PopularArticlesSection articles={popularPublications} />
+            <PopularArticlesSection articles={popularPublicationsData} />
           </div>
         </div>
       </div>

@@ -151,11 +151,11 @@ export default function ContactPage() {
                         <div className="mt-1 text-sm text-muted-foreground">
                           <div>General Inquiries:</div>
                           <div className="text-primary">
-                            info@rethinkingeconomics.pk
+                            info@reisbthinktank.com
                           </div>
                           <div className="mt-2">Media:</div>
                           <div className="text-primary">
-                            media@rethinkingeconomics.pk
+                            media@reisbthinktank.com
                           </div>
                         </div>
                       </div>

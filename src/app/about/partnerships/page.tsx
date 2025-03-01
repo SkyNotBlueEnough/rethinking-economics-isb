@@ -220,7 +220,7 @@ export default function PartnershipsPage() {
                   <div className="font-medium">
                     Contact us at{" "}
                     <span className="text-primary">
-                      partnerships@rethinkingeconomics.pk
+                      partnerships@reisbthinktank.com
                     </span>{" "}
                     to discuss partnership opportunities.
                   </div>

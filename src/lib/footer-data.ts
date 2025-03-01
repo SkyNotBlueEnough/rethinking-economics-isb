@@ -2,30 +2,27 @@ import type { FooterSection, SocialLink } from "~/lib/types/footer";
 
 export const footerSections: FooterSection[] = [
   {
-    title: "About Us",
-    links: [
-      { label: "Our Mission", href: "/about/mission" },
-      { label: "Our Team", href: "/about/team" },
-      { label: "Partners", href: "/about/partners" },
-      { label: "Contact Us", href: "/contact" },
-    ],
-  },
-  {
     title: "Resources",
     links: [
-      { label: "Publications", href: "/publications" },
-      { label: "Research", href: "/research" },
-      { label: "Events", href: "/events" },
-      { label: "Blog", href: "/blog" },
+      { label: "Publications & Research", href: "/publications" },
+      { label: "Events & Initiatives", href: "/events" },
+      { label: "Policy and Advocacy", href: "/policy" },
+      { label: "Media and Press", href: "/media" },
     ],
   },
   {
-    title: "Get Involved",
+    title: "About Us",
     links: [
-      { label: "Join Us", href: "/join" },
-      { label: "Volunteer", href: "/volunteer" },
-      { label: "Donate", href: "/donate" },
-      { label: "Newsletter", href: "/newsletter" },
+      { label: "Overview", href: "/about/overview" },
+      { label: "Team", href: "/about/team" },
+      { label: "Partnerships", href: "/about/partnerships" },
+    ],
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Memberships and Collaboration", href: "/memberships" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
 ];

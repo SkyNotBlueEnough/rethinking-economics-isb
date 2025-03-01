@@ -43,7 +43,7 @@ export default function CollaborationPage() {
       question:
         "How can my organization collaborate with Rethinking Economics?",
       answer:
-        "We welcome collaboration opportunities with organizations that share our values and mission. Please contact our partnerships coordinator at partnerships@rethinkingeconomics.pk with a brief description of your organization and proposed collaboration.",
+        "We welcome collaboration opportunities with organizations that share our values and mission. Please contact our partnerships coordinator at partnerships@reisbthinktank.com with a brief description of your organization and proposed collaboration.",
       category: "collaboration",
     },
     {
@@ -55,7 +55,7 @@ export default function CollaborationPage() {
     {
       question: "Do you accept interns or volunteers?",
       answer:
-        "Yes, we have internship and volunteer programs for students and professionals interested in gaining experience in economic research, policy advocacy, and nonprofit management. Check our website for current opportunities or contact us at info@rethinkingeconomics.pk.",
+        "Yes, we have internship and volunteer programs for students and professionals interested in gaining experience in economic research, policy advocacy, and nonprofit management. Check our website for current opportunities or contact us at info@reisbthinktank.com.",
       category: "collaboration",
     },
     {
@@ -282,7 +282,7 @@ export default function CollaborationPage() {
               For more information about collaboration opportunities, please
               contact us at{" "}
               <span className="font-medium">
-                partnerships@rethinkingeconomics.pk
+                partnerships@reisbthinktank.com
               </span>{" "}
               or fill out our contact form.
             </div>

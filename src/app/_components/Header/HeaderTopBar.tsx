@@ -5,9 +5,12 @@ import { SignInButton, SignUpButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { UserMenu } from "~/components/ui/user-menu";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { useThemeContext } from "~/lib/theme-context";
 
 export function HeaderTopBar() {
   const { isSignedIn } = useAuth();
+  const { theme, setTheme } = useThemeContext();
 
   return (
     <header className="w-full border-b">
@@ -32,18 +35,21 @@ export function HeaderTopBar() {
         </Link>
 
         <div className="hidden flex-1 justify-end md:flex">
-          {!isSignedIn ? (
-            <div className="flex gap-2">
-              <SignInButton>
-                <Button variant="secondary">Sign In</Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button>Sign Up</Button>
-              </SignUpButton>
-            </div>
-          ) : (
-            <UserMenu />
-          )}
+          <div className="flex items-center gap-4">
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+            {!isSignedIn ? (
+              <div className="flex gap-2">
+                <SignInButton>
+                  <Button variant="secondary">Sign In</Button>
+                </SignInButton>
+                <SignUpButton>
+                  <Button>Sign Up</Button>
+                </SignUpButton>
+              </div>
+            ) : (
+              <UserMenu />
+            )}
+          </div>
         </div>
       </div>
     </header>

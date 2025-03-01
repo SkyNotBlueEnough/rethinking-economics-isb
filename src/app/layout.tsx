@@ -17,6 +17,7 @@ import { FooterWrapper } from "~/components/FooterWrapper";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import { ThemeProvider } from "~/lib/theme-context";
 
 const lora = Lora({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -30,23 +31,25 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider afterSignOutUrl="/">
-      <html lang="en" className={`pencraft-dark ${lora.className}`}>
+      <html lang="en" className={lora.className}>
         <body>
           <TRPCReactProvider>
-            <NextSSRPlugin
-              /**
-               * The `extractRouterConfig` will extract only the route configs
-               * from the router to prevent additional information from being
-               * leaked to the client. The data passed to the client is the same
-               * as if you were to fetch `/api/uploadthing` directly.
-               */
-              routerConfig={extractRouterConfig(ourFileRouter)}
-            />
-            <div className="flex min-h-screen flex-col">
-              <MainHeader />
-              <main className="flex-1">{children}</main>
-              <FooterWrapper />
-            </div>
+            <ThemeProvider>
+              <NextSSRPlugin
+                /**
+                 * The `extractRouterConfig` will extract only the route configs
+                 * from the router to prevent additional information from being
+                 * leaked to the client. The data passed to the client is the same
+                 * as if you were to fetch `/api/uploadthing` directly.
+                 */
+                routerConfig={extractRouterConfig(ourFileRouter)}
+              />
+              <div className="flex min-h-screen flex-col">
+                <MainHeader />
+                <main className="flex-1">{children}</main>
+                <FooterWrapper />
+              </div>
+            </ThemeProvider>
           </TRPCReactProvider>
           <Toaster />
         </body>

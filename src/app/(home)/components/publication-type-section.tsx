@@ -1,5 +1,6 @@
 import { api } from "~/trpc/react";
 import { ArticleGridSection } from "./article-grid-section";
+import { PublicationTypeSectionSkeleton } from "./loading-skeletons";
 import type { PublicationType } from "~/lib/types/publications";
 
 interface PublicationTypeSectionProps {
@@ -20,8 +21,13 @@ export function PublicationTypeSection({
       limit: 4,
     });
 
+  // Show skeleton while loading
+  if (isLoading) {
+    return <PublicationTypeSectionSkeleton title={displayName} />;
+  }
+
   // Don't render anything if there are no publications of this type
-  if (!isLoading && publications.length === 0) {
+  if (publications.length === 0) {
     return null;
   }
 

@@ -166,9 +166,7 @@ export default function TeamPage() {
               We&apos;re always looking for passionate individuals to join our
               mission. If you&apos;re interested in contributing to our work,
               please reach out to us at{" "}
-              <span className="font-medium">
-                careers@rethinkingeconomics.pk
-              </span>
+              <span className="font-medium">careers@reisbthinktank.com</span>
             </div>
           </div>
         </>

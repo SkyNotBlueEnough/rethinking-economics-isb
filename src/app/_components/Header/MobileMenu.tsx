@@ -23,11 +23,14 @@ import { cn } from "~/lib/utils";
 import { navigationLinks } from "./navigationLinks";
 import { MobileUserMenu } from "~/components/ui/mobile-user-menu";
 import { Separator } from "~/components/ui/separator";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { useThemeContext } from "~/lib/theme-context";
 
 export function MobileMenu() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const { isSignedIn } = useAuth();
+  const { theme, setTheme } = useThemeContext();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -42,6 +45,13 @@ export function MobileMenu() {
           <SheetTitle>Rethinking Economics</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-4 py-4">
+          {/* Theme toggle */}
+          <div className="flex items-center justify-between px-2">
+            <div className="text-sm font-medium">Toggle Theme</div>
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
+          <Separator className="my-1" />
+
           {/* User menu at the top when signed in */}
           {isSignedIn && (
             <>

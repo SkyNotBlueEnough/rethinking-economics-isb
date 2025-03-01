@@ -141,10 +141,7 @@ export function Footer({ sections, socialLinks, copyright }: FooterProps) {
             </>
           ) : (
             sections.map((section) => (
-              <FooterSectionComponent
-                key={`${section.title}-${section.links.length}`}
-                {...section}
-              />
+              <FooterSectionComponent key={section.title} {...section} />
             ))
           )}
         </div>

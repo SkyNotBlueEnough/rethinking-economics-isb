@@ -154,7 +154,7 @@ export default function EventsPage() {
       case "seminar":
         return "destructive";
       case "webinar":
-        return "outline";
+        return "destructive";
       default:
         return "default";
     }

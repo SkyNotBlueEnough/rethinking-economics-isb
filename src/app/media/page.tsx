@@ -334,7 +334,7 @@ export default function MediaPage() {
                 <span className="font-medium">Subtain Zahid</span>,
                 Communications Director
               </div>
-              <div>Email: media@rethinkingeconomics.pk</div>
+              <div>Email: media@reisbthinktank.com</div>
               <div>Phone: +92 300 1234567</div>
             </div>
             <div className="mt-6">

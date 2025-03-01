@@ -6,6 +6,7 @@ interface ArticleGridSectionProps {
   title: string;
   articles: PublicationsWithAuthor;
   viewAllLink?: string;
+  isLoading?: boolean;
 }
 
 /**
@@ -15,6 +16,7 @@ export function ArticleGridSection({
   title,
   articles,
   viewAllLink = "/publications",
+  isLoading = false,
 }: ArticleGridSectionProps) {
   if (!articles || articles.length === 0) return null;
 
