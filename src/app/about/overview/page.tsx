@@ -26,7 +26,7 @@ export default function OverviewPage() {
         <>
           {/* Mission, Vision, Values Tabs */}
           <Tabs defaultValue="mission" className="mb-12 w-full">
-            <TabsList className="mb-6 grid w-full grid-cols-3">
+            <TabsList className="mb-6 w-full justify-start overflow-x-auto">
               <TabsTrigger value="mission">Mission</TabsTrigger>
               <TabsTrigger value="vision">Vision</TabsTrigger>
               <TabsTrigger value="values">Values</TabsTrigger>

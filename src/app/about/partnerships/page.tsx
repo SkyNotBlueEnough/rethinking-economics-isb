@@ -138,7 +138,7 @@ export default function PartnershipsPage() {
           </div>
 
           <Tabs defaultValue="academic" className="w-full">
-            <TabsList>
+            <TabsList className="mb-6 w-full justify-start overflow-x-auto">
               <TabsTrigger value="academic">Academic Institutions</TabsTrigger>
               <TabsTrigger value="policy">Policy Organizations</TabsTrigger>
               <TabsTrigger value="civil_society">Civil Society</TabsTrigger>

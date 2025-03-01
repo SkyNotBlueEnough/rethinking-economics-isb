@@ -129,7 +129,7 @@ export default function TeamPage() {
           </div>
 
           <Tabs defaultValue="leadership" className="w-full">
-            <TabsList className="mb-8 grid w-full grid-cols-3">
+            <TabsList className="mb-6 w-full justify-start overflow-x-auto">
               <TabsTrigger value="leadership">Leadership</TabsTrigger>
               <TabsTrigger value="faculty">Faculty</TabsTrigger>
               <TabsTrigger value="students">Students & Fellows</TabsTrigger>
