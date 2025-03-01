@@ -138,7 +138,7 @@ export default function PartnershipsPage() {
           </div>
 
           <Tabs defaultValue="academic" className="w-full">
-            <TabsList className="mb-8 grid w-full grid-cols-3">
+            <TabsList className="mb-8 flex w-full flex-col space-y-2 sm:grid sm:grid-cols-3 sm:space-y-0">
               <TabsTrigger value="academic">Academic Institutions</TabsTrigger>
               <TabsTrigger value="policy">Policy Organizations</TabsTrigger>
               <TabsTrigger value="civil_society">Civil Society</TabsTrigger>
