@@ -49,8 +49,8 @@ export default function TeamPage() {
       id: "3",
       name: "Subtain Zahid",
       role: "Communications Director",
-      bio: "Zainab has a background in journalism and public policy. She leads our media engagement and public outreach efforts.",
-      imageUrl: "/images/team/zainab-malik.jpg",
+      bio: "Subtain has a background in journalism and public policy. He leads our media engagement and public outreach efforts.",
+      imageUrl: "/images/team/subtain-zahid.jpg",
       category: "leadership",
     },
     {
