@@ -492,3 +492,84 @@ export const inquiries = createTable("inquiry", {
 });
 
 // No relations needed for inquiries as it doesn't reference other tables
+
+// =========== ABOUT US PAGE CONTENT ===========
+export const aboutOverview = createTable("about_overview", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  section: text("section", {
+    enum: ["mission", "vision", "values", "history"],
+  }).notNull(),
+  title: text("title", { length: 256 }).notNull(),
+  content: text("content", { length: 2000 }),
+  displayOrder: int("display_order").default(0),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+export const aboutOverviewRelations = relations(aboutOverview, ({ many }) => ({
+  cards: many(aboutCards),
+}));
+
+export const aboutCards = createTable("about_cards", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  sectionId: int("section_id").references(() => aboutOverview.id),
+  title: text("title", { length: 256 }).notNull(),
+  content: text("content", { length: 1000 }),
+  icon: text("icon", { length: 50 }),
+  displayOrder: int("display_order").default(0),
+});
+
+export const aboutCardsRelations = relations(aboutCards, ({ one }) => ({
+  section: one(aboutOverview, {
+    fields: [aboutCards.sectionId],
+    references: [aboutOverview.id],
+  }),
+}));
+
+export const historyMilestones = createTable("history_milestones", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  year: text("year", { length: 20 }).notNull(),
+  title: text("title", { length: 256 }).notNull(),
+  content: text("content", { length: 1000 }),
+  displayOrder: int("display_order").default(0),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+export const teamMembers = createTable("team_members", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 256 }).notNull(),
+  role: text("role", { length: 256 }).notNull(),
+  bio: text("bio", { length: 2000 }),
+  imageUrl: text("image_url"),
+  category: text("category", {
+    enum: ["leadership", "faculty", "students"],
+  }).notNull(),
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+export const partners = createTable("partners", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 256 }).notNull(),
+  description: text("description", { length: 1000 }),
+  logoUrl: text("logo_url"),
+  website: text("website", { length: 256 }),
+  category: text("category", {
+    enum: ["academic", "policy", "civil_society"],
+  }).notNull(),
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});

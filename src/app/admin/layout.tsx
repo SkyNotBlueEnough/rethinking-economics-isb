@@ -27,12 +27,21 @@ export default async function AdminLayout({
       </div>
 
       <Tabs defaultValue="publications" className="w-full">
-        <TabsList className="mb-8">
+        <TabsList className="mb-8 flex flex-wrap">
           <Link href="/admin/publications" passHref>
             <TabsTrigger value="publications">Publications</TabsTrigger>
           </Link>
           <Link href="/admin/users" passHref>
             <TabsTrigger value="users">Users</TabsTrigger>
+          </Link>
+          <Link href="/admin/about/overview" passHref>
+            <TabsTrigger value="about-overview">About: Overview</TabsTrigger>
+          </Link>
+          <Link href="/admin/about/team" passHref>
+            <TabsTrigger value="about-team">About: Team</TabsTrigger>
+          </Link>
+          <Link href="/admin/about/partners" passHref>
+            <TabsTrigger value="about-partners">About: Partners</TabsTrigger>
           </Link>
         </TabsList>
       </Tabs>
