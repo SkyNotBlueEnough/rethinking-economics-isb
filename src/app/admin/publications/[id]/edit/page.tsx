@@ -27,6 +27,10 @@ import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { toast } from "sonner";
 import { Separator } from "~/components/ui/separator";
 import { Badge } from "~/components/ui/badge";
+import {
+  MarkdownEditor,
+  MarkdownEditorSkeleton,
+} from "~/components/ui/markdown-editor";
 
 // Publication types
 const PUBLICATION_TYPES = [
@@ -174,8 +178,40 @@ export default function EditPublicationPage() {
 
   if (isLoadingPublication ?? isLoadingUsers ?? initialLoading) {
     return (
-      <div className="flex h-[400px] items-center justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="flex flex-col space-y-4">
+        <div className="h-10 w-48 animate-pulse rounded-md bg-muted/60" />
+        <Card>
+          <CardHeader>
+            <div className="h-7 w-40 animate-pulse rounded-md bg-muted/60" />
+            <div className="h-5 w-72 animate-pulse rounded-md bg-muted/40" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <div className="h-5 w-20 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <div className="h-5 w-32 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-5 w-24 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-5 w-20 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-24 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-5 w-20 animate-pulse rounded-md bg-muted/60" />
+              <MarkdownEditorSkeleton className="min-h-[400px]" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <div className="h-10 w-24 animate-pulse rounded-md bg-muted/40" />
+          </CardFooter>
+        </Card>
       </div>
     );
   }
@@ -331,13 +367,16 @@ export default function EditPublicationPage() {
             {/* Content */}
             <div className="space-y-2">
               <Label htmlFor="content">Content</Label>
-              <Textarea
-                id="content"
-                rows={12}
-                value={formData.content}
-                onChange={(e) => handleInputChange("content", e.target.value)}
-                placeholder="Enter the publication content"
+              <MarkdownEditor
+                content={formData.content}
+                onChange={(value) => handleInputChange("content", value)}
+                placeholder="Write your publication content here using markdown formatting..."
+                className="min-h-[400px]"
               />
+              <div className="text-xs text-muted-foreground">
+                Use the toolbar to format your content with headings, lists,
+                links, and more.
+              </div>
             </div>
 
             {/* Tags */}

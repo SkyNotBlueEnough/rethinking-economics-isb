@@ -1,0 +1,7 @@
+---
+description: Installing packages, running commands.
+globs: *
+---
+
+Use npm when installing any packages. 
+

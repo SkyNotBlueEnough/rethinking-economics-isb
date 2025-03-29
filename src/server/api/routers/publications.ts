@@ -79,7 +79,7 @@ export const publicationsRouter = createTRPCRouter({
       with: {
         author: true,
       },
-    });
+    }) as Promise<PublicationWithAuthor>;
   }),
 
   // Get related publications by type or category

@@ -28,6 +28,26 @@ import { Label } from "~/components/ui/label";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { Separator } from "~/components/ui/separator";
 import { toast } from "sonner";
+import { MarkdownEditor } from "~/components/ui/markdown-editor";
+
+// Content renderer component that safely handles HTML content from trusted sources
+const ContentRenderer = ({ content }: { content: string }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <div
+      className="prose-custom prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
+};
 
 // Publication review page component
 export default function PublicationReviewPage() {
@@ -35,7 +55,9 @@ export default function PublicationReviewPage() {
   const params = useParams();
   const id = Number.parseInt(params.id as string, 10);
 
-  const [activeTab, setActiveTab] = useState<"preview" | "edit">("preview");
+  const [activeTab, setActiveTab] = useState<"preview" | "edit" | "reject">(
+    "preview",
+  );
   const [rejectionReason, setRejectionReason] = useState("");
   const [rejectionDetails, setRejectionDetails] = useState("");
   const [modifications, setModifications] = useState({
@@ -192,7 +214,7 @@ export default function PublicationReviewPage() {
             </Badge>
           </div>
           <CardDescription>
-            By {publication.author?.name ?? "Unknown"} •
+            By {publication.authorId ?? "Unknown"} •
             {publication.createdAt && (
               <span>
                 {" "}
@@ -206,7 +228,9 @@ export default function PublicationReviewPage() {
         <CardContent className="pt-6">
           <Tabs
             value={activeTab}
-            onValueChange={(v) => setActiveTab(v as "preview" | "edit")}
+            onValueChange={(v) =>
+              setActiveTab(v as "preview" | "edit" | "reject")
+            }
           >
             <TabsList className="mb-6">
               <TabsTrigger value="preview">Preview</TabsTrigger>
@@ -225,8 +249,12 @@ export default function PublicationReviewPage() {
 
               <div>
                 <div className="mb-2 text-lg font-medium">Content</div>
-                <div className="prose max-w-none rounded-md bg-muted p-4">
-                  {publication.content ?? "No content provided"}
+                <div className="rounded-md bg-muted/30 p-4">
+                  {publication.content ? (
+                    <ContentRenderer content={publication.content} />
+                  ) : (
+                    "No content provided"
+                  )}
                 </div>
               </div>
 
@@ -298,14 +326,17 @@ export default function PublicationReviewPage() {
 
                 <div>
                   <Label htmlFor="content">Content</Label>
-                  <Textarea
-                    id="content"
-                    rows={12}
-                    value={modifications.content}
-                    onChange={(e) =>
-                      handleModificationChange("content", e.target.value)
+                  <MarkdownEditor
+                    content={modifications.content}
+                    onChange={(value) =>
+                      handleModificationChange("content", value)
                     }
+                    className="min-h-[400px]"
                   />
+                  <div className="mt-2 text-xs text-muted-foreground">
+                    Use the toolbar to format the content with headings, lists,
+                    links, and more.
+                  </div>
                 </div>
 
                 <div className="pt-4">

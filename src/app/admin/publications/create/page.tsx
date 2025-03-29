@@ -27,6 +27,7 @@ import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { toast } from "sonner";
 import { Separator } from "~/components/ui/separator";
 import type { Profile } from "~/lib/types/admin";
+import { MarkdownEditor } from "~/components/ui/markdown-editor";
 
 // Publication types
 const PUBLICATION_TYPES = [
@@ -297,13 +298,16 @@ export default function CreatePublicationPage() {
             {/* Content */}
             <div className="space-y-2">
               <Label htmlFor="content">Content</Label>
-              <Textarea
-                id="content"
-                rows={12}
-                value={formData.content}
-                onChange={(e) => handleInputChange("content", e.target.value)}
-                placeholder="Enter the publication content"
+              <MarkdownEditor
+                content={formData.content}
+                onChange={(value) => handleInputChange("content", value)}
+                placeholder="Write your publication content here using markdown formatting..."
+                className="min-h-[400px]"
               />
+              <div className="text-xs text-muted-foreground">
+                Use the toolbar to format your content with headings, lists,
+                links, and more.
+              </div>
             </div>
 
             {/* Tags */}

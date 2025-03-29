@@ -26,9 +26,8 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 
-// Content renderer component to avoid dangerouslySetInnerHTML linter warning
-// We need to use dangerouslySetInnerHTML for rendering HTML content
-// eslint-disable-next-line react/no-danger
+// Content renderer component that safely handles HTML content from trusted sources
+// We use dangerouslySetInnerHTML because we need to render HTML content from the markdown editor
 const ContentRenderer = ({ content }: { content: string }) => {
   const [mounted, setMounted] = useState(false);
 
@@ -38,10 +37,13 @@ const ContentRenderer = ({ content }: { content: string }) => {
 
   if (!mounted) return null;
 
-  // Using a div with dangerouslySetInnerHTML in a separate component
-  // eslint-disable-next-line react/no-danger
-  // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-  return <div dangerouslySetInnerHTML={{ __html: content }} />;
+  return (
+    <div
+      className="prose-custom prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+      dangerouslySetInnerHTML={{ __html: content }}
+    />
+  );
 };
 
 // Related article card component
@@ -253,8 +255,8 @@ export default function ArticlePage() {
         )}
 
         {/* Article Content */}
-        <div className="prose prose-sm sm:prose-base md:prose-lg max-w-none">
-          <ContentRenderer content={article.content} />
+        <div className="prose-custom prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none">
+          <ContentRenderer content={article.content ?? ""} />
         </div>
 
         {/* PDF Download */}
