@@ -25,26 +25,30 @@ export default function OverviewPage() {
   const isLoading =
     missionLoading || visionLoading || valuesLoading || historyLoading;
 
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
   return (
     <div>
-      {isLoading ? (
-        <OverviewSkeleton />
-      ) : (
-        <>
-          {/* Mission, Vision, Values Tabs */}
-          <Tabs defaultValue="mission" className="mb-12 w-full">
-            <TabsList className="mb-6 w-full justify-start overflow-x-auto">
-              <TabsTrigger value="mission">Mission</TabsTrigger>
-              <TabsTrigger value="vision">Vision</TabsTrigger>
-              <TabsTrigger value="values">Values</TabsTrigger>
-            </TabsList>
-            <TabsContent value="mission" className="space-y-4">
+      {/* Mission, Vision, Values Tabs */}
+      <Tabs defaultValue="mission" className="mb-12 w-full">
+        <TabsList className="mb-6 w-full justify-start overflow-x-auto">
+          <TabsTrigger value="mission">Mission</TabsTrigger>
+          <TabsTrigger value="vision">Vision</TabsTrigger>
+          <TabsTrigger value="values">Values</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="mission" className="space-y-4">
+          {missionLoading ? (
+            <SectionSkeleton cardCount={2} />
+          ) : (
+            <>
               <div className="text-xl font-semibold">
                 {missionData?.title || "Our Mission"}
               </div>
               <div className="text-muted-foreground">
-                {missionData?.content ||
-                  "Rethinking Economics is dedicated to transforming economic discourse in Pakistan by promoting pluralistic, interdisciplinary approaches to economic theory and policy. We aim to bridge the gap between academic economics and real-world challenges, fostering critical thinking and innovative solutions to Pakistan's economic issues."}
+                {missionData?.content || "No mission content available."}
               </div>
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 {missionData?.cards && missionData.cards.length > 0 ? (
@@ -57,40 +61,25 @@ export default function OverviewPage() {
                     </Card>
                   ))
                 ) : (
-                  <>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Education Reform</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We advocate for diverse economic curricula that
-                        incorporate heterodox perspectives, historical context,
-                        and interdisciplinary approaches, preparing students to
-                        address complex economic challenges.
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Policy Influence</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We engage with policymakers, providing evidence-based
-                        research and alternative economic frameworks to inform
-                        decisions that promote sustainable and equitable
-                        economic development.
-                      </CardContent>
-                    </Card>
-                  </>
+                  <div className="col-span-2 text-center text-muted-foreground">
+                    No mission cards available.
+                  </div>
                 )}
               </div>
-            </TabsContent>
-            <TabsContent value="vision" className="space-y-4">
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="vision" className="space-y-4">
+          {visionLoading ? (
+            <SectionSkeleton cardCount={3} />
+          ) : (
+            <>
               <div className="text-xl font-semibold">
                 {visionData?.title || "Our Vision"}
               </div>
               <div className="text-muted-foreground">
-                {visionData?.content ||
-                  "We envision an economic discourse in Pakistan that embraces diverse perspectives, prioritizes human well-being and environmental sustainability, and addresses the unique challenges of our society. Our goal is to cultivate a generation of economists and citizens equipped to create a more just, sustainable, and prosperous economy."}
+                {visionData?.content || "No vision content available."}
               </div>
               <div className="mt-4">
                 <Card>
@@ -114,69 +103,27 @@ export default function OverviewPage() {
                         </div>
                       ))
                     ) : (
-                      <>
-                        <div className="flex items-start gap-4">
-                          <div className="rounded-full bg-primary/10 p-2 text-primary">
-                            <span className="sr-only">Checkmark</span>
-                            <LucideCheck />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              Transformed Economics Education
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Economics curricula across Pakistani universities
-                              that incorporate diverse theoretical perspectives,
-                              historical context, and interdisciplinary
-                              approaches.
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                          <div className="rounded-full bg-primary/10 p-2 text-primary">
-                            <span className="sr-only">Checkmark</span>
-                            <LucideCheck />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              Inclusive Policy Discourse
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              Economic policy debates that consider a wide range
-                              of perspectives and prioritize social and
-                              environmental outcomes alongside traditional
-                              economic metrics.
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                          <div className="rounded-full bg-primary/10 p-2 text-primary">
-                            <span className="sr-only">Checkmark</span>
-                            <LucideCheck />
-                          </div>
-                          <div>
-                            <div className="font-medium">Engaged Citizenry</div>
-                            <div className="text-sm text-muted-foreground">
-                              A public that is economically literate and
-                              actively engaged in economic discourse, capable of
-                              critically evaluating economic policies and their
-                              impacts.
-                            </div>
-                          </div>
-                        </div>
-                      </>
+                      <div className="text-center text-muted-foreground">
+                        No vision goals available.
+                      </div>
                     )}
                   </CardContent>
                 </Card>
               </div>
-            </TabsContent>
-            <TabsContent value="values" className="space-y-4">
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="values" className="space-y-4">
+          {valuesLoading ? (
+            <SectionSkeleton cardCount={4} />
+          ) : (
+            <>
               <div className="text-xl font-semibold">
                 {valuesData?.title || "Our Values"}
               </div>
               <div className="text-muted-foreground">
-                {valuesData?.content ||
-                  "Our work is guided by a commitment to pluralism, critical thinking, inclusivity, and real-world relevance. We believe that economics should serve society and the environment, not the other way around."}
+                {valuesData?.content || "No values content available."}
               </div>
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {valuesData?.cards && valuesData.cards.length > 0 ? (
@@ -189,111 +136,63 @@ export default function OverviewPage() {
                     </Card>
                   ))
                 ) : (
-                  <>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Pluralism</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We embrace diverse economic theories and methodologies,
-                        recognizing that no single approach can address all
-                        economic questions.
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Critical Thinking</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We encourage questioning assumptions, examining
-                        evidence, and considering alternative perspectives in
-                        economic analysis.
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Inclusivity</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We promote economic discourse that represents diverse
-                        voices and addresses the needs of all members of
-                        society.
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Real-world Relevance</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        We focus on economics that addresses actual challenges
-                        facing Pakistan and contributes to practical solutions.
-                      </CardContent>
-                    </Card>
-                  </>
+                  <div className="col-span-4 text-center text-muted-foreground">
+                    No values cards available.
+                  </div>
                 )}
               </div>
-            </TabsContent>
-          </Tabs>
+            </>
+          )}
+        </TabsContent>
+      </Tabs>
 
-          {/* History Section */}
-          <div className="mb-12">
-            <div className="mb-6 text-2xl font-bold">Our History</div>
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  {historyMilestones && historyMilestones.length > 0 ? (
-                    historyMilestones.map((milestone) => (
-                      <div key={milestone.id}>
-                        <div className="text-lg font-medium">
-                          {milestone.year}: {milestone.title}
-                        </div>
-                        <div className="mt-2 text-muted-foreground">
-                          {milestone.content}
-                        </div>
+      {/* History Section */}
+      <div className="mb-12">
+        <div className="mb-6 text-2xl font-bold">Our History</div>
+        {historyLoading ? (
+          <Skeleton className="h-64 w-full" />
+        ) : (
+          <Card>
+            <CardContent className="p-6">
+              <div className="space-y-6">
+                {historyMilestones && historyMilestones.length > 0 ? (
+                  historyMilestones.map((milestone) => (
+                    <div key={milestone.id}>
+                      <div className="text-lg font-medium">
+                        {milestone.year}: {milestone.title}
                       </div>
-                    ))
-                  ) : (
-                    <>
-                      <div>
-                        <div className="text-lg font-medium">
-                          2020: Foundation
-                        </div>
-                        <div className="mt-2 text-muted-foreground">
-                          Rethinking Economics Pakistan was established by a
-                          group of economics students and faculty members
-                          concerned about the narrow focus of economics
-                          education and policy discourse in Pakistan.
-                        </div>
+                      <div className="mt-2 text-muted-foreground">
+                        {milestone.content}
                       </div>
-                      <div>
-                        <div className="text-lg font-medium">
-                          2021: Growth and Expansion
-                        </div>
-                        <div className="mt-2 text-muted-foreground">
-                          We expanded our network to include chapters at major
-                          universities across Pakistan and launched our first
-                          research initiatives and public events.
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-lg font-medium">
-                          2022-Present: Impact and Influence
-                        </div>
-                        <div className="mt-2 text-muted-foreground">
-                          We have established partnerships with international
-                          organizations, contributed to policy debates, and
-                          begun to influence economics curricula at Pakistani
-                          universities.
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </>
-      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-muted-foreground">
+                    No history milestones available.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SectionSkeleton({ cardCount = 2 }: { cardCount?: number }) {
+  // Create an array of unique IDs for the skeleton cards
+  const skeletonIds = ["sk1", "sk2", "sk3", "sk4"].slice(0, cardCount);
+
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-6 w-1/4" />
+      <Skeleton className="h-24 w-full" />
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {skeletonIds.map((id) => (
+          <Skeleton key={id} className="h-40 w-full" />
+        ))}
+      </div>
     </div>
   );
 }
@@ -301,9 +200,6 @@ export default function OverviewPage() {
 function OverviewSkeleton() {
   return (
     <div className="space-y-12">
-      {/* Hero Skeleton */}
-      <Skeleton className="aspect-[21/9] w-full rounded-lg" />
-
       {/* Tabs Skeleton */}
       <div className="space-y-6">
         <div className="grid grid-cols-3 gap-4">

@@ -106,7 +106,6 @@
 	"ct3aMetadata": {
 		"initVersion": "7.38.1"
 	},
-	"packageManager": "pnpm@9.4.0",
 	"overrides": {
 		"drizzle-orm": {
 			"drizzle-orm": "0.33.0"
