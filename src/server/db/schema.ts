@@ -281,12 +281,16 @@ export const events = createTable(
     endDate: int("end_date", { mode: "timestamp" }),
     registrationUrl: text("registration_url"),
     thumbnailUrl: text("thumbnail_url"),
+    type: text("type", {
+      enum: ["conference", "workshop", "seminar", "webinar"],
+    }).default("conference"),
     status: text("status", {
       enum: ["upcoming", "ongoing", "completed", "canceled"],
     }).default("upcoming"),
     isVirtual: int("is_virtual", { mode: "boolean" }).default(false),
     virtualLink: text("virtual_link"),
     maxAttendees: int("max_attendees"),
+    displayOrder: int("display_order").default(0),
     createdAt: int("created_at", { mode: "timestamp" })
       .default(sql`(unixepoch())`)
       .notNull(),
@@ -565,6 +569,24 @@ export const partners = createTable("partners", {
   category: text("category", {
     enum: ["academic", "policy", "civil_society"],
   }).notNull(),
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+// =========== INITIATIVES CONTENT ===========
+export const initiatives = createTable("initiatives", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  title: text("title", { length: 256 }).notNull(),
+  description: text("description", { length: 2000 }),
+  category: text("category", {
+    enum: ["education", "policy", "community", "research"],
+  }).notNull(),
+  iconName: text("icon_name", { length: 100 }),
   displayOrder: int("display_order").default(0),
   createdAt: int("created_at", { mode: "timestamp" })
     .default(sql`(unixepoch())`)

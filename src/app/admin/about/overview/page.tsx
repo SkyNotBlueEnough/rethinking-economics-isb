@@ -31,7 +31,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PlusCircle, Edit, Trash2, PlusSquare } from "lucide-react";
-import type { SectionType, AboutOverviewWithCards } from "~/lib/types/about";
+import type {
+  SectionType,
+  AboutOverviewWithCards,
+  HistoryMilestone,
+} from "~/lib/types/about";
 import { Skeleton } from "~/components/ui/skeleton";
 
 // Form schema for overview section
@@ -53,11 +57,21 @@ const cardFormSchema = z.object({
   displayOrder: z.coerce.number().int().default(0),
 });
 
+// Form schema for history milestone
+const milestoneFormSchema = z.object({
+  id: z.number().optional(),
+  year: z.string().min(1, "Year is required"),
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  content: z.string().min(10, "Content must be at least 10 characters"),
+  displayOrder: z.coerce.number().int().default(0),
+});
+
 export default function AdminAboutOverviewPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<SectionType>("mission");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isCardDialogOpen, setIsCardDialogOpen] = useState(false);
+  const [isMilestoneDialogOpen, setIsMilestoneDialogOpen] = useState(false);
   const [editingSection, setEditingSection] =
     useState<AboutOverviewWithCards | null>(null);
   const [editingCard, setEditingCard] = useState<{
@@ -68,19 +82,30 @@ export default function AdminAboutOverviewPage() {
     icon?: string;
     displayOrder: number;
   } | null>(null);
+  const [editingMilestone, setEditingMilestone] =
+    useState<HistoryMilestone | null>(null);
 
   // Queries
   const {
     data: sections,
-    isLoading,
-    refetch,
+    isLoading: sectionsLoading,
+    refetch: refetchSections,
   } = api.about.getOverviewSections.useQuery();
+
+  const {
+    data: historyMilestones,
+    isLoading: milestonesLoading,
+    refetch: refetchMilestones,
+  } = api.about.getHistoryMilestones.useQuery();
+
+  const isLoading =
+    sectionsLoading || (activeTab === "history" && milestonesLoading);
 
   // Mutations
   const upsertSection = api.about.upsertOverviewSection.useMutation({
     onSuccess: () => {
       toast.success("Section saved successfully");
-      refetch();
+      refetchSections();
       setIsAddDialogOpen(false);
       setEditingSection(null);
     },
@@ -89,7 +114,7 @@ export default function AdminAboutOverviewPage() {
   const createCard = api.about.createCard.useMutation({
     onSuccess: () => {
       toast.success("Card created successfully");
-      refetch();
+      refetchSections();
       setIsCardDialogOpen(false);
     },
   });
@@ -97,7 +122,7 @@ export default function AdminAboutOverviewPage() {
   const updateCard = api.about.updateCard.useMutation({
     onSuccess: () => {
       toast.success("Card updated successfully");
-      refetch();
+      refetchSections();
       setIsCardDialogOpen(false);
       setEditingCard(null);
     },
@@ -106,14 +131,39 @@ export default function AdminAboutOverviewPage() {
   const deleteCard = api.about.deleteCard.useMutation({
     onSuccess: () => {
       toast.success("Card deleted successfully");
-      refetch();
+      refetchSections();
     },
   });
 
   const deleteSection = api.about.deleteOverviewSection.useMutation({
     onSuccess: () => {
       toast.success("Section deleted successfully");
-      refetch();
+      refetchSections();
+    },
+  });
+
+  // History milestone mutations
+  const createMilestone = api.about.createHistoryMilestone.useMutation({
+    onSuccess: () => {
+      toast.success("History milestone created successfully");
+      refetchMilestones();
+      setIsMilestoneDialogOpen(false);
+    },
+  });
+
+  const updateMilestone = api.about.updateHistoryMilestone.useMutation({
+    onSuccess: () => {
+      toast.success("History milestone updated successfully");
+      refetchMilestones();
+      setIsMilestoneDialogOpen(false);
+      setEditingMilestone(null);
+    },
+  });
+
+  const deleteMilestone = api.about.deleteHistoryMilestone.useMutation({
+    onSuccess: () => {
+      toast.success("History milestone deleted successfully");
+      refetchMilestones();
     },
   });
 
@@ -135,6 +185,17 @@ export default function AdminAboutOverviewPage() {
       title: "",
       content: "",
       icon: "",
+      displayOrder: 0,
+    },
+  });
+
+  // Milestone form
+  const milestoneForm = useForm<z.infer<typeof milestoneFormSchema>>({
+    resolver: zodResolver(milestoneFormSchema),
+    defaultValues: {
+      year: "",
+      title: "",
+      content: "",
       displayOrder: 0,
     },
   });
@@ -230,6 +291,46 @@ export default function AdminAboutOverviewPage() {
     setIsAddDialogOpen(true);
   };
 
+  const handleAddMilestone = () => {
+    setEditingMilestone(null);
+    milestoneForm.reset({
+      year: "",
+      title: "",
+      content: "",
+      displayOrder: 0,
+    });
+    setIsMilestoneDialogOpen(true);
+  };
+
+  const handleEditMilestone = (milestone: HistoryMilestone) => {
+    setEditingMilestone(milestone);
+    milestoneForm.reset({
+      id: milestone.id,
+      year: milestone.year,
+      title: milestone.title,
+      content: milestone.content || "",
+      displayOrder: milestone.displayOrder || 0,
+    });
+    setIsMilestoneDialogOpen(true);
+  };
+
+  const handleDeleteMilestone = (id: number) => {
+    if (confirm("Are you sure you want to delete this history milestone?")) {
+      deleteMilestone.mutate(id);
+    }
+  };
+
+  const onMilestoneSubmit = (data: z.infer<typeof milestoneFormSchema>) => {
+    if (data.id) {
+      updateMilestone.mutate({
+        ...data,
+        id: data.id as number,
+      });
+    } else {
+      createMilestone.mutate(data);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -297,13 +398,11 @@ export default function AdminAboutOverviewPage() {
           </TabsContent>
 
           <TabsContent value="history" className="space-y-4">
-            {renderSectionContent(
-              activeSection,
-              handleEditSection,
-              handleDeleteSection,
-              handleAddCard,
-              handleEditCard,
-              handleDeleteCard,
+            {renderHistoryContent(
+              historyMilestones,
+              handleAddMilestone,
+              handleEditMilestone,
+              handleDeleteMilestone,
             )}
           </TabsContent>
         </Tabs>
@@ -419,10 +518,14 @@ export default function AdminAboutOverviewPage() {
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
-              {editingCard ? "Edit Card" : "Add New Card"}
+              {editingCard
+                ? `Edit ${activeTab === "vision" ? "Long-term Goal" : "Card"}`
+                : `Add New ${activeTab === "vision" ? "Long-term Goal" : "Card"}`}
             </DialogTitle>
             <DialogDescription>
-              Add a card to the {activeTab} section.
+              {activeTab === "vision"
+                ? "Add a long-term goal to the Vision section."
+                : `Add a card to the ${activeTab} section.`}
             </DialogDescription>
           </DialogHeader>
           <Form {...cardForm}>
@@ -435,9 +538,18 @@ export default function AdminAboutOverviewPage() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>
+                      {activeTab === "vision" ? "Goal Title" : "Title"}
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Card Title" {...field} />
+                      <Input
+                        placeholder={
+                          activeTab === "vision"
+                            ? "Long-term Goal Title"
+                            : "Card Title"
+                        }
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -451,7 +563,11 @@ export default function AdminAboutOverviewPage() {
                     <FormLabel>Content</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Enter card content..."
+                        placeholder={
+                          activeTab === "vision"
+                            ? "Describe this long-term goal..."
+                            : "Enter card content..."
+                        }
                         className="min-h-[100px]"
                         {...field}
                       />
@@ -513,6 +629,113 @@ export default function AdminAboutOverviewPage() {
           </Form>
         </DialogContent>
       </Dialog>
+
+      {/* Add/Edit Milestone Dialog */}
+      <Dialog
+        open={isMilestoneDialogOpen}
+        onOpenChange={setIsMilestoneDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>
+              {editingMilestone
+                ? "Edit History Milestone"
+                : "Add New History Milestone"}
+            </DialogTitle>
+            <DialogDescription>
+              Enter details for the history milestone.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...milestoneForm}>
+            <form
+              onSubmit={milestoneForm.handleSubmit(onMilestoneSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={milestoneForm.control}
+                name="year"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Year</FormLabel>
+                    <FormControl>
+                      <Input placeholder="2020" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Year or time period (e.g., "2020" or "2020-2022")
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={milestoneForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Milestone Title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={milestoneForm.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe this milestone..."
+                        className="min-h-[100px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={milestoneForm.control}
+                name="displayOrder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Order</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Controls the order in which milestones appear.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsMilestoneDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={
+                    createMilestone.isPending || updateMilestone.isPending
+                  }
+                >
+                  {createMilestone.isPending || updateMilestone.isPending
+                    ? "Saving..."
+                    : "Save"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -543,6 +766,9 @@ function renderSectionContent(
     );
   }
 
+  // Determine if this is the Vision section
+  const isVisionSection = section.section === "vision";
+
   return (
     <div>
       <Card>
@@ -570,14 +796,16 @@ function renderSectionContent(
           </div>
 
           <div className="mb-4 flex items-center justify-between">
-            <div className="text-sm font-medium">Cards</div>
+            <div className="text-sm font-medium">
+              {isVisionSection ? "Long-term Goals" : "Cards"}
+            </div>
             <Button
               size="sm"
               variant="outline"
               onClick={() => onAddCard(section.id)}
             >
               <PlusCircle className="mr-2 h-3 w-3" />
-              Add Card
+              {isVisionSection ? "Add Goal" : "Add Card"}
             </Button>
           </div>
 
@@ -627,10 +855,86 @@ function renderSectionContent(
           ) : (
             <div className="rounded-lg border p-4 text-center">
               <div className="text-sm text-muted-foreground">
-                No cards added yet. Add cards to display in this section.
+                {isVisionSection
+                  ? "No long-term goals added yet. Add goals to display in this section."
+                  : "No cards added yet. Add cards to display in this section."}
               </div>
             </div>
           )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function renderHistoryContent(
+  historyMilestones: HistoryMilestone[] | undefined,
+  onAddMilestone: () => void,
+  onEditMilestone: (milestone: HistoryMilestone) => void,
+  onDeleteMilestone: (id: number) => void,
+) {
+  if (!historyMilestones || historyMilestones.length === 0) {
+    return (
+      <div className="rounded-lg border p-6 text-center">
+        <div className="mb-2 text-lg font-medium">
+          No history milestones yet
+        </div>
+        <div className="mb-4 text-sm text-muted-foreground">
+          Add history milestones to display on the website.
+        </div>
+        <Button onClick={onAddMilestone}>Add Milestone</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="text-sm font-medium">History Milestones</div>
+        <Button size="sm" variant="outline" onClick={onAddMilestone}>
+          <PlusCircle className="mr-2 h-3 w-3" />
+          Add Milestone
+        </Button>
+      </div>
+
+      <Card>
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            {historyMilestones.map((milestone) => (
+              <div key={milestone.id} className="border-b pb-4 last:border-0">
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="text-lg font-medium">
+                    {milestone.year}: {milestone.title}
+                  </div>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onEditMilestone(milestone)}
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Edit</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive"
+                      onClick={() => onDeleteMilestone(milestone.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Delete</span>
+                    </Button>
+                  </div>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {milestone.content}
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Display order: {milestone.displayOrder || 0}
+                </div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

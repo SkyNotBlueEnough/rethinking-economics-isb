@@ -37,7 +37,7 @@ export default function TeamPage() {
         <TabsList className="mb-6 w-full justify-start overflow-x-auto">
           <TabsTrigger value="leadership">Leadership</TabsTrigger>
           <TabsTrigger value="faculty">Faculty</TabsTrigger>
-          <TabsTrigger value="students">Students & Fellows</TabsTrigger>
+          {/* <TabsTrigger value="students">Students & Fellows</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="leadership">
