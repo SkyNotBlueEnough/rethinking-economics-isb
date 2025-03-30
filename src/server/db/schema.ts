@@ -368,6 +368,11 @@ export const policies = createTable(
     slug: text("slug", { length: 256 }).notNull(),
     summary: text("summary", { length: 1000 }),
     content: text("content").notNull(),
+    category: text("category", {
+      enum: ["economic", "social", "environmental"],
+    })
+      .default("economic")
+      .notNull(),
     thumbnailUrl: text("thumbnail_url"),
     authorId: text("author_id").references(() => profiles.id),
     status: text("status", {
@@ -393,6 +398,25 @@ export const policiesRelations = relations(policies, ({ one, many }) => ({
   }),
   caseStudies: many(caseStudies),
 }));
+
+// Advocacy campaigns
+export const advocacyCampaigns = createTable("advocacy_campaign", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  title: text("title", { length: 256 }).notNull(),
+  description: text("description", { length: 2000 }),
+  status: text("status", {
+    enum: ["active", "completed", "planned"],
+  }).default("planned"),
+  imageUrl: text("image_url"),
+  achievements: text("achievements"), // Store as serialized JSON string
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
 
 // Policy case studies
 export const caseStudies = createTable(

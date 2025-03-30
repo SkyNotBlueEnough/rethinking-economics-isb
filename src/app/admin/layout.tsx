@@ -40,6 +40,9 @@ export default async function AdminLayout({
           <Link href="/admin/events/initiatives" passHref>
             <TabsTrigger value="initiatives">Initiatives</TabsTrigger>
           </Link>
+          <Link href="/admin/policy" passHref>
+            <TabsTrigger value="policy">Policy & Advocacy</TabsTrigger>
+          </Link>
           <Link href="/admin/about/overview" passHref>
             <TabsTrigger value="about-overview">About: Overview</TabsTrigger>
           </Link>

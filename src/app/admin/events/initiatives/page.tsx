@@ -232,7 +232,7 @@ export default function AdminInitiativesPage() {
 
       {/* Add/Edit Initiative Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
               {editingInitiative ? "Edit Initiative" : "Add New Initiative"}

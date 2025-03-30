@@ -410,7 +410,7 @@ export default function AdminAboutOverviewPage() {
 
       {/* Add/Edit Section Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>
               {editingSection ? "Edit Section" : "Add New Section"}
