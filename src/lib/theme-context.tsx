@@ -14,14 +14,14 @@ type ThemeContextType = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "pencraft-dark",
+  theme: "pencraft-light",
   setTheme: () => null,
 });
 
 export const useThemeContext = () => useContext(ThemeContext);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<string>("pencraft-dark");
+  const [theme, setTheme] = useState<string>("pencraft-light");
 
   useEffect(() => {
     // Update the html class when theme changes
