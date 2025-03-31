@@ -45,9 +45,7 @@ export default function RootLayout({
                 routerConfig={extractRouterConfig(ourFileRouter)}
               />
               <div className="flex min-h-screen flex-col">
-                <MainHeader />
-                <main className="flex-1">{children}</main>
-                <FooterWrapper />
+                <main>{children}</main>
               </div>
             </ThemeProvider>
           </TRPCReactProvider>

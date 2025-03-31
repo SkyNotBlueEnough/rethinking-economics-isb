@@ -14,13 +14,13 @@ import { api } from "~/trpc/react";
 import type { Event, Initiative } from "~/lib/types/events";
 
 // Import modular components
-import { EventCard } from "~/app/events/components/EventCard";
-import { InitiativeCard } from "~/app/events/components/InitiativeCard";
-import { EventDetailsDialog } from "~/app/events/components/EventDetailsDialog";
+import { EventCard } from "~/app/(user)/events/components/EventCard";
+import { InitiativeCard } from "~/app/(user)/events/components/InitiativeCard";
+import { EventDetailsDialog } from "~/app/(user)/events/components/EventDetailsDialog";
 import {
   EventsSkeleton,
   InitiativesSkeleton,
-} from "~/app/events/components/EventsSkeleton";
+} from "~/app/(user)/events/components/EventsSkeleton";
 
 export default function EventsPage() {
   // Fetch events from API
