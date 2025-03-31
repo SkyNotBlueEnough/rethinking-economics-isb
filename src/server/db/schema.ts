@@ -68,6 +68,39 @@ export const membershipTypesRelations = relations(
   }),
 );
 
+// FAQs for memberships and collaboration
+export const faqs = createTable("faq", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  question: text("question", { length: 500 }).notNull(),
+  answer: text("answer", { length: 2000 }).notNull(),
+  category: text("category", {
+    enum: ["collaboration", "membership"],
+  }).notNull(),
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
+// Collaboration cards for the collaboration section
+export const collaborationCards = createTable("collaboration_card", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  title: text("title", { length: 256 }).notNull(),
+  description: text("description", { length: 1000 }),
+  iconName: text("icon_name", { length: 100 }),
+  bulletPoints: text("bullet_points", { length: 1000 }),
+  displayOrder: int("display_order").default(0),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
 export const memberships = createTable("membership", {
   id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   userId: text("user_id")
