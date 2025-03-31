@@ -82,10 +82,10 @@ export default function MembershipsAndCollaborationPage() {
         onValueChange={setActiveTab}
         className="mb-8"
       >
-        <TabsList>
-          {/* <TabsTrigger value="collaboration">Collaboration</TabsTrigger> */}
-          {/* <TabsTrigger value="memberships">Memberships</TabsTrigger> */}
-        </TabsList>
+        {/* <TabsList> */}
+        {/* <TabsTrigger value="collaboration">Collaboration</TabsTrigger> */}
+        {/* <TabsTrigger value="memberships">Memberships</TabsTrigger> */}
+        {/* </TabsList> */}
 
         <TabsContent value="collaboration">
           {isLoading ? (
@@ -134,7 +134,47 @@ export default function MembershipsAndCollaborationPage() {
                           {faq.question}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground">
-                          {faq.answer}
+                          {faq.answer.includes("•") ||
+                          faq.answer.includes("-") ? (
+                            <div>
+                              {faq.answer
+                                .split(/\n/)
+                                .map((paragraph, paragraphId) => {
+                                  const trimmedParagraph = paragraph.trim();
+                                  const uniqueKey = `faq-paragraph-${faq.id}-${paragraphId}`;
+
+                                  if (
+                                    trimmedParagraph.startsWith("•") ||
+                                    trimmedParagraph.startsWith("-")
+                                  ) {
+                                    return (
+                                      <div
+                                        key={uniqueKey}
+                                        className="flex items-start"
+                                      >
+                                        <span className="mr-2 text-primary">
+                                          •
+                                        </span>
+                                        <span>
+                                          {trimmedParagraph.replace(
+                                            /^[•-]\s*/,
+                                            "",
+                                          )}
+                                        </span>
+                                      </div>
+                                    );
+                                  }
+
+                                  return trimmedParagraph ? (
+                                    <div key={uniqueKey} className="mb-2">
+                                      {trimmedParagraph}
+                                    </div>
+                                  ) : null;
+                                })}
+                            </div>
+                          ) : (
+                            faq.answer
+                          )}
                         </AccordionContent>
                       </AccordionItem>
                     ))}

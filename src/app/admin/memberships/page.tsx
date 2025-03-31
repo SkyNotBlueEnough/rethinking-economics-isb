@@ -61,7 +61,7 @@ const faqFormSchema = z.object({
   id: z.number().optional(),
   question: z.string().min(10, "Question must be at least 10 characters"),
   answer: z.string().min(20, "Answer must be at least 20 characters"),
-  category: z.enum(["collaboration", "membership"]),
+  category: z.enum(["collaboration", "membership"]).default("collaboration"),
   displayOrder: z.coerce.number().int().default(0),
 });
 
@@ -254,7 +254,7 @@ export default function AdminMembershipsPage() {
       id: faq.id,
       question: faq.question,
       answer: faq.answer,
-      category: faq.category,
+      category: "collaboration",
       displayOrder: faq.displayOrder ?? 0,
     });
     setIsAddFaqDialogOpen(true);
@@ -363,9 +363,9 @@ export default function AdminMembershipsPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="types" onValueChange={setActiveTab} className="mb-8">
+      <Tabs defaultValue="faqs" onValueChange={setActiveTab} className="mb-8">
         <TabsList>
-          <TabsTrigger value="types">Membership Types</TabsTrigger>
+          {/* <TabsTrigger value="types">Membership Types</TabsTrigger> */}
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
           <TabsTrigger value="cards">Collaboration Cards</TabsTrigger>
         </TabsList>
@@ -786,39 +786,6 @@ export default function AdminMembershipsPage() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={faqForm.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <div className="flex flex-col space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="collaboration"
-                          value="collaboration"
-                          checked={field.value === "collaboration"}
-                          onChange={() => field.onChange("collaboration")}
-                        />
-                        <label htmlFor="collaboration">Collaboration</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="membership"
-                          value="membership"
-                          checked={field.value === "membership"}
-                          onChange={() => field.onChange("membership")}
-                        />
-                        <label htmlFor="membership">Membership</label>
-                      </div>
-                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
