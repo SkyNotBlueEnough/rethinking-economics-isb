@@ -16,20 +16,16 @@ import {
 import { Button } from "~/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useParams } from "next/navigation";
-export default function PolicyBriefPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  // Unwrap params using React.use()
-  const { slug } = useParams();
+
+export default function PolicyBriefPage() {
+  const { slug } = useParams<{ slug: string }>();
 
   // Fetch policy data using the slug
   const {
     data: policy,
     isLoading,
     error,
-  } = api.policy.getPolicyBySlug.useQuery(slug as string);
+  } = api.policy.getPolicyBySlug.useQuery(slug);
 
   // Format date
   const formatDate = (date: Date | null | undefined) => {
