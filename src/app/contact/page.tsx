@@ -22,9 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { toast } from "sonner";
+import { contactFormSchema } from "~/lib/types/contact";
+import type { z } from "zod";
 
 export default function ContactPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -32,6 +36,9 @@ export default function ContactPage() {
     message: "",
     inquiryType: "",
   });
+  const [formErrors, setFormErrors] = useState<z.ZodFormattedError<
+    z.infer<typeof contactFormSchema>
+  > | null>(null);
 
   // Simulate loading state
   useEffect(() => {
@@ -46,24 +53,90 @@ export default function ContactPage() {
   ) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
+
+    // Clear errors for this field when user starts typing
+    if (formErrors?.[name as keyof typeof formState]?._errors?.length) {
+      setFormErrors((prev) => {
+        if (!prev) return null;
+        const newErrors = { ...prev };
+        // Create a new object without the specific field
+        const { [name as keyof typeof formState]: _, ...rest } = newErrors;
+        return rest as z.ZodFormattedError<z.infer<typeof contactFormSchema>>;
+      });
+    }
   };
 
   const handleSelectChange = (value: string) => {
     setFormState((prev) => ({ ...prev, inquiryType: value }));
+
+    // Clear errors for inquiry type when user selects something
+    if (formErrors?.inquiryType?._errors?.length) {
+      setFormErrors((prev) => {
+        if (!prev) return null;
+        const newErrors = { ...prev };
+        // Create a new object without the inquiryType field
+        const { inquiryType: _, ...rest } = newErrors;
+        return rest as z.ZodFormattedError<z.infer<typeof contactFormSchema>>;
+      });
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, you would send the form data to your backend
-    console.log("Form submitted:", formState);
-    alert("Thank you for your message. We will get back to you soon!");
-    setFormState({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-      inquiryType: "",
-    });
+
+    // Validate form data
+    const result = contactFormSchema.safeParse(formState);
+
+    if (!result.success) {
+      // Set validation errors
+      setFormErrors(result.error.format());
+      return;
+    }
+
+    // Clear previous errors
+    setFormErrors(null);
+
+    try {
+      setIsSubmitting(true);
+
+      // Submit form data to API
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to submit form");
+      }
+
+      // Show success message
+      toast.success(
+        "Thank you for your message. We will get back to you soon!",
+      );
+
+      // Reset form
+      setFormState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+        inquiryType: "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit form. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -348,8 +421,19 @@ export default function ContactPage() {
                         placeholder="Your name"
                         value={formState.name}
                         onChange={handleInputChange}
-                        required
+                        disabled={isSubmitting}
+                        aria-invalid={!!formErrors?.name?._errors?.length}
+                        className={
+                          formErrors?.name?._errors?.length
+                            ? "border-destructive"
+                            : ""
+                        }
                       />
+                      {formErrors?.name?._errors?.length && (
+                        <div className="text-sm text-destructive">
+                          {formErrors.name._errors[0]}
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
@@ -360,8 +444,19 @@ export default function ContactPage() {
                         placeholder="Your email address"
                         value={formState.email}
                         onChange={handleInputChange}
-                        required
+                        disabled={isSubmitting}
+                        aria-invalid={!!formErrors?.email?._errors?.length}
+                        className={
+                          formErrors?.email?._errors?.length
+                            ? "border-destructive"
+                            : ""
+                        }
                       />
+                      {formErrors?.email?._errors?.length && (
+                        <div className="text-sm text-destructive">
+                          {formErrors.email._errors[0]}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -370,9 +465,15 @@ export default function ContactPage() {
                     <Select
                       value={formState.inquiryType}
                       onValueChange={handleSelectChange}
-                      required
+                      disabled={isSubmitting}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger
+                        className={
+                          formErrors?.inquiryType?._errors?.length
+                            ? "border-destructive"
+                            : ""
+                        }
+                      >
                         <SelectValue placeholder="Select inquiry type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -387,6 +488,11 @@ export default function ContactPage() {
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
+                    {formErrors?.inquiryType?._errors?.length && (
+                      <div className="text-sm text-destructive">
+                        {formErrors.inquiryType._errors[0]}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -397,8 +503,19 @@ export default function ContactPage() {
                       placeholder="Subject of your message"
                       value={formState.subject}
                       onChange={handleInputChange}
-                      required
+                      disabled={isSubmitting}
+                      aria-invalid={!!formErrors?.subject?._errors?.length}
+                      className={
+                        formErrors?.subject?._errors?.length
+                          ? "border-destructive"
+                          : ""
+                      }
                     />
+                    {formErrors?.subject?._errors?.length && (
+                      <div className="text-sm text-destructive">
+                        {formErrors.subject._errors[0]}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -410,12 +527,49 @@ export default function ContactPage() {
                       rows={5}
                       value={formState.message}
                       onChange={handleInputChange}
-                      required
+                      disabled={isSubmitting}
+                      aria-invalid={!!formErrors?.message?._errors?.length}
+                      className={
+                        formErrors?.message?._errors?.length
+                          ? "border-destructive"
+                          : ""
+                      }
                     />
+                    {formErrors?.message?._errors?.length && (
+                      <div className="text-sm text-destructive">
+                        {formErrors.message._errors[0]}
+                      </div>
+                    )}
                   </div>
 
-                  <Button type="submit" className="w-full md:w-auto">
-                    Send Message
+                  <Button
+                    type="submit"
+                    className="w-full md:w-auto"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg
+                          className="mr-2 h-4 w-4 animate-spin"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-label="Loading"
+                          aria-hidden="true"
+                        >
+                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
                   </Button>
                 </form>
               </CardContent>

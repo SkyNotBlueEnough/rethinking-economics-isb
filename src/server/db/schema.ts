@@ -652,3 +652,24 @@ export const initiatives = createTable("initiatives", {
     () => new Date(),
   ),
 });
+
+// =========== CONTACT SUBMISSIONS ===========
+export const contactSubmissions = createTable("contact_submission", {
+  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 256 }).notNull(),
+  email: text("email", { length: 256 }).notNull(),
+  subject: text("subject", { length: 256 }).notNull(),
+  message: text("message", { length: 2000 }).notNull(),
+  inquiryType: text("inquiry_type", {
+    enum: ["general", "membership", "collaboration", "media", "other"],
+  }).notNull(),
+  status: text("status", {
+    enum: ["new", "in_progress", "resolved"],
+  }).default("new"),
+  createdAt: int("created_at", { mode: "timestamp" })
+    .default(sql`(unixepoch())`)
+    .notNull(),
+  updatedAt: int("updated_at", { mode: "timestamp" }).$onUpdate(
+    () => new Date(),
+  ),
+});
