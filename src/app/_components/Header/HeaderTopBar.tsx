@@ -7,10 +7,36 @@ import MobileMenu from "./MobileMenu";
 import { UserMenu } from "~/components/ui/user-menu";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useThemeContext } from "~/lib/theme-context";
+import { useEffect, useState } from "react";
 
 export function HeaderTopBar() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, userId } = useAuth();
   const { theme, setTheme } = useThemeContext();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        if (!userId) {
+          setIsAdmin(false);
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetch("/api/admin/check");
+        const data = await response.json();
+        setIsAdmin(data.isAdmin);
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+        setIsAdmin(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void checkAdmin();
+  }, [userId]);
 
   return (
     <header className="w-full border-b">
@@ -47,7 +73,18 @@ export function HeaderTopBar() {
                 </SignUpButton>
               </div>
             ) : (
-              <UserMenu />
+              <>
+                {isLoading ? (
+                  <div className="h-10 w-24 animate-pulse rounded-md bg-muted" />
+                ) : (
+                  isAdmin && (
+                    <Link href="/admin">
+                      <Button variant="outline">Admin Portal</Button>
+                    </Link>
+                  )
+                )}
+                <UserMenu />
+              </>
             )}
           </div>
         </div>

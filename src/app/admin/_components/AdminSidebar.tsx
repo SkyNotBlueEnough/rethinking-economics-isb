@@ -11,6 +11,7 @@ import {
   Mail,
   UserRound,
   Users,
+  Globe,
 } from "lucide-react";
 
 import {
@@ -105,16 +106,6 @@ const skeletonWidths = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Simulate loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <Sidebar
@@ -133,42 +124,38 @@ export function AdminSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
-            {isLoading ? (
-              <SidebarMenu>
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <SidebarMenuItem key={`skeleton-${index + 1}`}>
-                    <div className="flex h-8 items-center gap-2 rounded-md px-2">
-                      <Skeleton className="h-4 w-4 rounded-md" />
-                      <Skeleton
-                        className="h-4 flex-1"
-                        style={{ maxWidth: skeletonWidths[index] }}
-                      />
-                    </div>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            ) : (
-              <SidebarMenu>
-                {adminNavItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      data-active={pathname === item.href}
-                      className="flex items-center gap-2 py-2"
-                    >
-                      <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            )}
+            <SidebarMenu>
+              {adminNavItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    data-active={pathname === item.href}
+                    className="flex items-center gap-2 py-2"
+                  >
+                    <Link href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="px-4 py-2">
+      <SidebarFooter className="flex flex-col gap-4 px-4 py-2">
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            asChild
+            className="flex items-center gap-2 py-2 text-primary hover:text-primary/90"
+          >
+            <Link href="/">
+              <Globe className="h-4 w-4" />
+              <span>Return to Main Website</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <Separator />
         <div className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Rethinking Economics
         </div>
