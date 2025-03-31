@@ -47,10 +47,10 @@ export const navigationLinks: NavLink[] = [
     title: "Memberships and Collaboration",
     href: "/memberships",
   },
-  {
-    title: "Media and Press",
-    href: "/media",
-  },
+  // {
+  //   title: "Media and Press",
+  //   href: "/media",
+  // },
   {
     title: "Contact Us",
     href: "/contact",
