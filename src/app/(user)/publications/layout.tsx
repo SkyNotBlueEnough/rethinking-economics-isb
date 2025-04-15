@@ -3,5 +3,5 @@ export default function PublicationsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="min-h-screen bg-background">{children}</div>;
+  return <div className="min-h-screen w-full bg-background">{children}</div>;
 }
