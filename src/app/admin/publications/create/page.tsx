@@ -19,15 +19,27 @@ import { Textarea } from "~/components/ui/textarea";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
 import { toast } from "sonner";
 import { Separator } from "~/components/ui/separator";
-import type { Profile } from "~/lib/types/admin";
+import { PlusCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import type { CreateProfileInput } from "~/lib/types/admin";
 import { MarkdownEditor } from "~/components/ui/markdown-editor";
+import { CreateUserForm } from "~/app/admin/_components/CreateUserForm";
 
 // Publication types
 const PUBLICATION_TYPES = [
@@ -76,12 +88,16 @@ export default function CreatePublicationPage() {
     categories: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
 
   // Fetch users for author selection
-  const { data: users, isLoading: isLoadingUsers } =
-    api.admin.getUsers.useQuery({
-      search: "",
-    });
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+    refetch: refetchUsers,
+  } = api.admin.getUsers.useQuery({
+    search: "",
+  });
 
   // Set author when users are loaded
   useEffect(() => {
@@ -157,6 +173,17 @@ export default function CreatePublicationPage() {
     });
   };
 
+  // Handle successful user creation
+  const handleUserCreated = (newUser: CreateProfileInput & { id: string }) => {
+    setCreateUserDialogOpen(false);
+    void refetchUsers();
+
+    // Select the newly created user
+    setFormData((prev) => ({ ...prev, authorId: newUser.id }));
+
+    toast.success(`New author "${newUser.name}" has been added`);
+  };
+
   if (isLoadingUsers) {
     return (
       <div className="flex h-[400px] items-center justify-center">
@@ -194,27 +221,71 @@ export default function CreatePublicationPage() {
             {/* Author Selection */}
             <div className="space-y-2">
               <Label htmlFor="authorId">Author</Label>
-              <Select
-                value={formData.authorId}
-                onValueChange={(value) => handleInputChange("authorId", value)}
-              >
-                <SelectTrigger id="authorId">
-                  <SelectValue placeholder="Select author" />
-                </SelectTrigger>
-                <SelectContent>
-                  {users && users.length > 0 ? (
-                    users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.name ?? user.id}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="" disabled>
-                      No users available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center space-x-2">
+                <div className="relative flex-1">
+                  <Select
+                    value={formData.authorId}
+                    onValueChange={(value) => {
+                      if (value === "create_new") {
+                        setCreateUserDialogOpen(true);
+                        return;
+                      }
+                      handleInputChange("authorId", value);
+                    }}
+                  >
+                    <SelectTrigger id="authorId">
+                      <SelectValue placeholder="Select author" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Existing Authors</SelectLabel>
+                        {users && users.length > 0 ? (
+                          users.map((user) => (
+                            <SelectItem key={user.id} value={user.id}>
+                              {user.name ?? user.id}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="" disabled>
+                            No users available
+                          </SelectItem>
+                        )}
+                      </SelectGroup>
+                      <SelectSeparator />
+                      <SelectGroup>
+                        <SelectLabel>Actions</SelectLabel>
+                        <SelectItem
+                          value="create_new"
+                          className="font-medium text-primary"
+                        >
+                          <div className="flex items-center">
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Create New Author
+                          </div>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Dialog
+                    open={createUserDialogOpen}
+                    onOpenChange={setCreateUserDialogOpen}
+                  >
+                    <DialogContent className="sm:max-w-[500px]">
+                      <DialogHeader>
+                        <DialogTitle>Create New Author</DialogTitle>
+                        <DialogDescription>
+                          Add a new user profile for this publication
+                        </DialogDescription>
+                      </DialogHeader>
+                      <CreateUserForm
+                        onSuccess={handleUserCreated}
+                        onCancel={() => setCreateUserDialogOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
             </div>
 
             <Separator />

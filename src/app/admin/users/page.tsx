@@ -25,6 +25,15 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { LoadingSpinner } from "~/components/ui/loading-spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import { CreateUserForm } from "~/app/admin/_components/CreateUserForm";
 
 // UserTable Loading Skeleton
 function UserTableSkeleton() {
@@ -75,6 +84,7 @@ function UserTableSkeleton() {
 export default function AdminUsersPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
 
   // Fetch users
   const {
@@ -107,6 +117,29 @@ export default function AdminUsersPage() {
               value={searchQuery}
               onChange={handleSearch}
             />
+
+            <Dialog
+              open={createUserDialogOpen}
+              onOpenChange={setCreateUserDialogOpen}
+            >
+              <DialogTrigger asChild>
+                <Button variant="default">Add New User</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Create New User Profile</DialogTitle>
+                  <DialogDescription>
+                    Add a new user profile for publishing articles
+                  </DialogDescription>
+                </DialogHeader>
+                <CreateUserForm
+                  onSuccess={() => {
+                    setCreateUserDialogOpen(false);
+                    void refetch();
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
 
           {isLoading ? (

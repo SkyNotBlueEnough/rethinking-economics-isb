@@ -36,3 +36,14 @@ export interface AdminState {
   selectedPublication: PublicationWithAuthor | null;
   error: string | null;
 }
+
+export interface CreateProfileInput {
+  id?: string;
+  name: string;
+  position?: string;
+  bio?: string;
+  avatar?: string;
+  isTeamMember?: boolean;
+  teamRole?: string;
+  showOnWebsite?: boolean;
+}

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { eq, desc, and, like, inArray } from "drizzle-orm";
+import type { CreateProfileInput } from "~/lib/types/admin";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
@@ -748,5 +749,78 @@ export const adminRouter = createTRPCRouter({
 
         return newPublication;
       });
+    }),
+
+  // Create a new user profile (for use when publishing articles)
+  createUserProfile: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().optional(), // Optional custom ID, will generate a random one if not provided
+        name: z.string().min(1, "Name is required"),
+        position: z.string().optional(),
+        bio: z.string().optional(),
+        avatar: z.string().optional(),
+        isTeamMember: z.boolean().optional().default(false),
+        teamRole: z.string().optional(),
+        showOnWebsite: z.boolean().optional().default(false),
+      }) satisfies z.ZodType<CreateProfileInput>,
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get user ID from the context
+      const userId = ctx.user?.id;
+
+      if (!userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      // Check if user is admin
+      const isAdmin = await checkUserIsAdmin(userId);
+      if (!isAdmin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only admins can create user profiles",
+        });
+      }
+
+      // Generate a random ID if not provided
+      const profileId =
+        input.id ||
+        `auto_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
+      // Check if profile with the ID already exists
+      const existingProfile = await db
+        .select({ id: profiles.id })
+        .from(profiles)
+        .where(eq(profiles.id, profileId))
+        .limit(1);
+
+      if (existingProfile.length > 0) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "A profile with this ID already exists",
+        });
+      }
+
+      // Create the new profile
+      const [newProfile] = await db
+        .insert(profiles)
+        .values({
+          id: profileId,
+          name: input.name,
+          position: input.position || "",
+          bio: input.bio || "",
+          avatar: input.avatar || null,
+          isTeamMember: input.isTeamMember || false,
+          teamRole: input.teamRole || "",
+          showOnWebsite: input.showOnWebsite || false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      return newProfile;
     }),
 });
