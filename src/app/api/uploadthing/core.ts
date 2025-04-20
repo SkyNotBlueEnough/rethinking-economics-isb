@@ -40,6 +40,29 @@ export const ourFileRouter = {
       // Return data that will be sent to the client
       return { avatarUrl: file.url };
     }),
+
+  // New endpoint for markdown editor image uploads
+  markdownImageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const { userId } = getAuth(req);
+
+      // If you throw, the user will not be able to upload
+      if (!userId) throw new Error("Unauthorized");
+
+      return { userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log(
+        "Markdown image upload complete for userId:",
+        metadata.userId,
+      );
+      console.log("Image URL:", file.url);
+
+      // Return data that will be sent to the client
+      return { imageUrl: file.url };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

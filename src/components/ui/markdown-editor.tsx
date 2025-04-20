@@ -23,6 +23,9 @@ import {
   Quote,
   Undo,
   Redo,
+  Upload,
+  Type,
+  Loader2,
 } from "lucide-react";
 
 // Import UI components
@@ -34,6 +37,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { UploadButton } from "~/utils/uploadthing";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { toast } from "sonner";
 
 interface MarkdownEditorProps {
   content: string;
@@ -102,6 +108,8 @@ export const MarkdownEditor = ({
 
   const [linkUrl, setLinkUrl] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
+  const [imageUploadLoading, setImageUploadLoading] = React.useState(false);
+  const [imagePopoverOpen, setImagePopoverOpen] = React.useState(false);
 
   if (!editor) {
     return <MarkdownEditorSkeleton className={className} />;
@@ -132,6 +140,7 @@ export const MarkdownEditor = ({
 
     editor.chain().focus().setImage({ src: imageUrl }).run();
     setImageUrl("");
+    setImagePopoverOpen(false);
   };
 
   return (
@@ -288,7 +297,10 @@ export const MarkdownEditor = ({
           </PopoverContent>
         </Popover>
 
-        <Popover>
+        <Popover
+          open={imagePopoverOpen || imageUploadLoading}
+          onOpenChange={setImagePopoverOpen}
+        >
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
@@ -301,29 +313,85 @@ export const MarkdownEditor = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80 p-3">
-            <div className="space-y-2">
-              <div className="text-sm font-medium">Insert Image</div>
-              <Input
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="h-8 text-sm"
-              />
-              <div className="flex justify-end">
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    addImage();
-                    setImageUrl("");
-                  }}
-                  className="h-7 text-xs"
-                  type="button"
-                >
-                  Add Image
-                </Button>
-              </div>
-            </div>
+            <Tabs defaultValue="url" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="url">
+                  <Type className="mr-2 h-4 w-4" />
+                  URL
+                </TabsTrigger>
+                <TabsTrigger value="upload">
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="url" className="space-y-2 pt-2">
+                <div className="text-sm font-medium">Insert Image URL</div>
+                <Input
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="h-8 text-sm"
+                />
+                <div className="flex justify-end">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      addImage();
+                      setImageUrl("");
+                    }}
+                    className="h-7 text-xs"
+                    type="button"
+                  >
+                    Add Image
+                  </Button>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="upload" className="space-y-2 pt-2">
+                <div className="text-sm font-medium">Upload Image</div>
+                <div className="flex flex-col items-center py-2">
+                  {imageUploadLoading && (
+                    <div className="mb-2 flex items-center justify-center text-sm text-muted-foreground">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading image...
+                    </div>
+                  )}
+                  <UploadButton
+                    endpoint="markdownImageUploader"
+                    onUploadBegin={() => {
+                      setImageUploadLoading(true);
+                    }}
+                    onClientUploadComplete={(res) => {
+                      setImageUploadLoading(false);
+                      const url = res?.[0]?.url;
+                      if (url) {
+                        editor.chain().focus().setImage({ src: url }).run();
+                        toast.success("Image uploaded successfully");
+                        setImagePopoverOpen(false);
+                      }
+                    }}
+                    onUploadError={(error: Error) => {
+                      setImageUploadLoading(false);
+                      toast.error(`Error uploading image: ${error.message}`);
+                    }}
+                    content={{
+                      button({ ready, isUploading }) {
+                        if (isUploading) return "Uploading...";
+                        if (ready) return "Upload Image";
+                        return "Loading...";
+                      },
+                    }}
+                    appearance={{
+                      container: "flex",
+                      button:
+                        "rounded-md bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center gap-2 h-9 px-4 py-2 text-sm",
+                    }}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </PopoverContent>
         </Popover>
 
@@ -356,7 +424,7 @@ export const MarkdownEditor = ({
 
       <EditorContent
         editor={editor}
-        className="prose-custom prose prose-sm dark:prose-invert prose-headings:font-heading prose-headings:font-bold prose-strong:font-bold min-h-[300px] p-4"
+        className="prose-headings:font-heading prose prose-sm prose-custom min-h-[300px] p-4 dark:prose-invert prose-headings:font-bold prose-strong:font-bold"
       />
     </div>
   );
