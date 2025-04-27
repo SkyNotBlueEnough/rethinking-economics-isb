@@ -97,6 +97,15 @@
     --color-fg-primary: 54 55 55;
     --color-fg-secondary: 119 119 119;
     --color-detail: 0 0 0 0.1;
+    
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .pencraft-dark {
     --background: 0 0% 9%;
@@ -124,6 +133,15 @@
     --color-fg-primary: 238 238 238;
     --color-fg-secondary: 119 119 119;
     --color-detail: 255 255 255 0.1;
+    
+    --sidebar-background: 0 0% 13%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 82% 78%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 0 82% 78%;
   }
 }
 @layer base {

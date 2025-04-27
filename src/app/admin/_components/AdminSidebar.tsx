@@ -30,6 +30,8 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { useThemeContext } from "~/lib/theme-context";
 
 interface AdminNavItem {
   title: string;
@@ -106,6 +108,7 @@ const skeletonWidths = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { theme, setTheme } = useThemeContext();
 
   return (
     <Sidebar
@@ -144,6 +147,11 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="flex flex-col gap-4 px-4 py-2">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-muted-foreground">Theme</div>
+          <ThemeToggle theme={theme} setTheme={setTheme} />
+        </div>
+        <Separator />
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild
