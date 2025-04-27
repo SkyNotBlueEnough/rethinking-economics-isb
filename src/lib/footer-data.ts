@@ -30,22 +30,17 @@ export const footerSections: FooterSection[] = [
 export const socialLinks: SocialLink[] = [
   {
     platform: "Twitter",
-    href: "https://twitter.com/rethinking_econ",
+    href: "https://x.com/RethinkinEco",
     icon: "ri-twitter-x-fill",
   },
   {
-    platform: "Facebook",
-    href: "https://facebook.com/rethinkingeconomics",
-    icon: "ri-facebook-fill",
-  },
-  {
     platform: "Instagram",
-    href: "https://instagram.com/rethinking_economics",
+    href: "https://www.instagram.com/rethinking.economics.isb",
     icon: "ri-instagram-fill",
   },
   {
     platform: "LinkedIn",
-    href: "https://linkedin.com/company/rethinking-economics",
+    href: "https://www.linkedin.com/company/rethinking-economics-islamabad",
     icon: "ri-linkedin-fill",
   },
 ];
