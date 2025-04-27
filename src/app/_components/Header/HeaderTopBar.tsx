@@ -6,6 +6,7 @@ import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { UserMenu } from "~/components/ui/user-menu";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
+import { SearchDialog } from "~/components/ui/search-dialog";
 import { useThemeContext } from "~/lib/theme-context";
 import { useEffect, useState } from "react";
 
@@ -62,6 +63,7 @@ export function HeaderTopBar() {
 
         <div className="hidden flex-1 justify-end md:flex">
           <div className="flex items-center gap-4">
+            <SearchDialog />
             <ThemeToggle theme={theme} setTheme={setTheme} />
             {!isSignedIn ? (
               <div className="flex gap-2">

@@ -25,12 +25,39 @@ import { MobileUserMenu } from "~/components/ui/mobile-user-menu";
 import { Separator } from "~/components/ui/separator";
 import { ThemeToggle } from "~/components/ui/theme-toggle";
 import { useThemeContext } from "~/lib/theme-context";
+import { Input } from "~/components/ui/input";
+import { Search } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import type { SearchResult } from "~/lib/types/search";
 
 export function MobileMenu() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const { isSignedIn } = useAuth();
   const { theme, setTheme } = useThemeContext();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    try {
+      // This would be replaced with your actual search API call
+      const response = await fetch(
+        `/api/search?q=${encodeURIComponent(searchQuery)}`,
+      );
+      const data = await response.json();
+      setSearchResults(data.results || []);
+    } catch (error) {
+      console.error("Error searching:", error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,6 +72,54 @@ export function MobileMenu() {
           <SheetTitle>Rethinking Economics</SheetTitle>
         </SheetHeader>
         <div className="flex flex-col gap-4 py-4">
+          {/* Search input */}
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center gap-2 px-2"
+          >
+            <div className="relative flex-1">
+              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8"
+              />
+            </div>
+            <Button type="submit" size="sm" disabled={isSearching}>
+              {isSearching ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              ) : (
+                "Go"
+              )}
+            </Button>
+          </form>
+
+          {isSearching ? (
+            <div className="space-y-2 px-2">
+              <div className="h-6 w-2/3 animate-pulse rounded-md bg-muted" />
+              <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
+              <div className="h-6 w-2/3 animate-pulse rounded-md bg-muted" />
+              <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
+            </div>
+          ) : searchResults.length > 0 ? (
+            <div className="max-h-[200px] space-y-2 overflow-y-auto px-2">
+              {searchResults.map((result) => (
+                <Link
+                  key={result.id}
+                  href={result.url || `/search-result/${result.id}`}
+                  className="block rounded-md border p-2 hover:bg-accent"
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="font-medium">{result.title}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {result.description}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : null}
+
           {/* Theme toggle */}
           <div className="flex items-center justify-between px-2">
             <div className="text-sm font-medium">Toggle Theme</div>
