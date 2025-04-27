@@ -192,9 +192,9 @@ export default function ContactPage() {
                         </svg>
                       </div>
                       <div>
-                        <div className="font-medium">Our Office</div>
+                        <div className="font-medium">Location</div>
                         <div className="mt-1 text-sm text-muted-foreground">
-                          123 Economics Street, F-7/1
+                          Shangrilla Rd, E-8/1
                           <br />
                           Islamabad, Pakistan
                         </div>
@@ -225,67 +225,12 @@ export default function ContactPage() {
                         <div className="mt-1 text-sm text-muted-foreground">
                           <div>General Inquiries:</div>
                           <div className="text-primary">
-                            info@reisbthinktank.com
+                            rethinkingeconomicsislamabad@gmail.com
                           </div>
                           <div className="mt-2">Media:</div>
                           <div className="text-primary">
-                            media@reisbthinktank.com
+                            rethinkingeconomicsislamabad@gmail.com
                           </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/10 p-2 text-primary">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-phone"
-                          aria-hidden="true"
-                        >
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="font-medium">Phone</div>
-                        <div className="mt-1 text-sm text-muted-foreground">
-                          <div>Office:</div>
-                          <div className="text-primary">+92 51 1234567</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-full bg-primary/10 p-2 text-primary">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-clock"
-                          aria-hidden="true"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="font-medium">Office Hours</div>
-                        <div className="mt-1 text-sm text-muted-foreground">
-                          <div>Monday - Friday:</div>
-                          <div>9:00 AM - 5:00 PM</div>
                         </div>
                       </div>
                     </div>
