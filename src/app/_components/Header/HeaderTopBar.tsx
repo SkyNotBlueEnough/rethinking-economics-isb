@@ -76,12 +76,14 @@ export function HeaderTopBar() {
               <>
                 {isLoading ? (
                   <div className="h-10 w-24 animate-pulse rounded-md bg-muted" />
+                ) : isAdmin ? (
+                  <Link href="/admin">
+                    <Button variant="outline">Admin Portal</Button>
+                  </Link>
                 ) : (
-                  isAdmin && (
-                    <Link href="/admin">
-                      <Button variant="outline">Admin Portal</Button>
-                    </Link>
-                  )
+                  <Link href="/submissions">
+                    <Button variant="outline">Get Involved</Button>
+                  </Link>
                 )}
                 <UserMenu />
               </>

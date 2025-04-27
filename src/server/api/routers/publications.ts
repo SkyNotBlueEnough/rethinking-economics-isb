@@ -65,6 +65,77 @@ export const publicationsRouter = createTRPCRouter({
       return publication;
     }),
 
+  createSubmission: protectedProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        abstract: z.string().optional(),
+        content: z.string(),
+        type: z.enum([
+          "research_paper",
+          "policy_brief",
+          "opinion",
+          "blog_post",
+        ]),
+        tags: z.array(z.string()).optional(),
+        categories: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { user } = ctx;
+
+      if (!user?.id) {
+        throw new Error("Not authenticated");
+      }
+
+      const [publication] = await ctx.db
+        .insert(publications)
+        .values({
+          type: input.type,
+          title: input.title,
+          slug: input.title.toLowerCase().replace(/\s+/g, "-"),
+          content: input.content,
+          authorId: user.id,
+          status: "pending_review", // Hardcoded status for user submissions
+          abstract: input.abstract ?? "",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      return publication;
+    }),
+
+  getUserPublications: protectedProcedure.query(
+    async ({ ctx }): Promise<PublicationsWithAuthor> => {
+      const { user } = ctx;
+
+      if (!user?.id) {
+        throw new Error("Not authenticated");
+      }
+
+      return await ctx.db
+        .select({
+          id: publications.id,
+          title: publications.title,
+          slug: publications.slug,
+          type: publications.type,
+          status: publications.status,
+          thumbnailUrl: publications.thumbnailUrl,
+          publishedAt: publications.publishedAt,
+          createdAt: publications.createdAt,
+          author: {
+            id: profiles.id,
+            name: profiles.name,
+          },
+        })
+        .from(publications)
+        .leftJoin(profiles, eq(publications.authorId, profiles.id))
+        .where(eq(publications.authorId, user.id))
+        .orderBy(desc(publications.createdAt));
+    },
+  ),
+
   // Get all publications
   getAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.query.publications.findMany({
