@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -63,6 +64,10 @@ export default function AdminPublicationsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedPublications, setSelectedPublications] = useState<number[]>(
+    [],
+  );
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   // Fetch publications
   const {
@@ -93,6 +98,20 @@ export default function AdminPublicationsPage() {
     },
   });
 
+  // Bulk delete mutation
+  const bulkDeleteMutation = api.admin.bulkDeletePublications.useMutation({
+    onSuccess: () => {
+      toast.success("Selected publications deleted successfully");
+      void refetch();
+      setSelectedPublications([]);
+      setIsBulkDeleting(false);
+    },
+    onError: (error) => {
+      toast.error(`Error deleting publications: ${error.message}`);
+      setIsBulkDeleting(false);
+    },
+  });
+
   // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -102,6 +121,28 @@ export default function AdminPublicationsPage() {
   const handleDelete = (id: number) => {
     setIsDeleting(true);
     deletePublicationMutation.mutate({ id });
+  };
+
+  // Handle bulk delete
+  const handleBulkDelete = () => {
+    setIsBulkDeleting(true);
+    bulkDeleteMutation.mutate({ ids: selectedPublications });
+  };
+
+  const toggleSelectAll = () => {
+    if (publications) {
+      if (selectedPublications.length === publications.length) {
+        setSelectedPublications([]);
+      } else {
+        setSelectedPublications(publications.map((pub) => pub.id));
+      }
+    }
+  };
+
+  const togglePublicationSelection = (id: number) => {
+    setSelectedPublications((prev) =>
+      prev.includes(id) ? prev.filter((pubId) => pubId !== id) : [...prev, id],
+    );
   };
 
   return (
@@ -135,9 +176,52 @@ export default function AdminPublicationsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={() => router.push("/admin/publications/create")}>
-              Create New Publication
-            </Button>
+            <div className="flex space-x-2">
+              {selectedPublications.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                      Delete Selected ({selectedPublications.length})
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Delete Selected Publications
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete{" "}
+                        {selectedPublications.length} selected publications?
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleBulkDelete();
+                        }}
+                        disabled={isBulkDeleting}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {isBulkDeleting ? (
+                          <>
+                            <LoadingSpinner size="sm" className="mr-2" />
+                            Deleting...
+                          </>
+                        ) : (
+                          "Delete Selected"
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <Button onClick={() => router.push("/admin/publications/create")}>
+                Create New Publication
+              </Button>
+            </div>
           </div>
 
           {isLoading ? (
@@ -146,6 +230,15 @@ export default function AdminPublicationsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[50px]">
+                    <Checkbox
+                      checked={
+                        (publications?.length ?? 0) > 0 &&
+                        publications?.length === selectedPublications.length
+                      }
+                      onCheckedChange={toggleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Title</TableHead>
                   <TableHead>Author</TableHead>
                   <TableHead>Type</TableHead>
@@ -158,6 +251,16 @@ export default function AdminPublicationsPage() {
                 {publications && publications.length > 0 ? (
                   publications.map((publication) => (
                     <TableRow key={publication.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedPublications.includes(
+                            publication.id,
+                          )}
+                          onCheckedChange={() =>
+                            togglePublicationSelection(publication.id)
+                          }
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         <Link
                           href={`/admin/publications/${publication.id}/review`}
@@ -270,7 +373,7 @@ export default function AdminPublicationsPage() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="py-6 text-center">
+                    <TableCell colSpan={7} className="py-6 text-center">
                       No publications found
                     </TableCell>
                   </TableRow>

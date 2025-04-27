@@ -823,4 +823,51 @@ export const adminRouter = createTRPCRouter({
 
       return newProfile;
     }),
+
+  // Bulk delete publications
+  bulkDeletePublications: protectedProcedure
+    .input(
+      z.object({
+        ids: z.array(z.number()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get user ID from the context
+      const userId = ctx.user?.id;
+
+      if (!userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      // Check if user is admin
+      const isAdmin = await checkUserIsAdmin(userId);
+      if (!isAdmin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only admins can delete publications",
+        });
+      }
+
+      return await db.transaction(async (tx) => {
+        for (const id of input.ids) {
+          // First delete associated tags
+          await tx
+            .delete(publicationTags)
+            .where(eq(publicationTags.publicationId, id));
+
+          // Then delete associated categories
+          await tx
+            .delete(publicationCategories)
+            .where(eq(publicationCategories.publicationId, id));
+
+          // Finally delete the publication
+          await tx.delete(publications).where(eq(publications.id, id));
+        }
+
+        return { success: true };
+      });
+    }),
 });
