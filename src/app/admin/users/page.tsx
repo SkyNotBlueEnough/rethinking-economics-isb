@@ -200,15 +200,6 @@ export default function AdminUsersPage() {
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() =>
-                              router.push(`/admin/users/${user.id}`)
-                            }
-                          >
-                            View
-                          </Button>
-                          <Button
                             variant="default"
                             size="sm"
                             onClick={() =>
