@@ -122,7 +122,7 @@ export default function SubmissionsPage() {
         onValueChange={setActiveTab}
         className="space-y-4"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start justify-start gap-3">
           <TabsList>
             <TabsTrigger value="submissions">Submissions</TabsTrigger>
             <TabsTrigger value="guidelines">Guidelines</TabsTrigger>

@@ -67,7 +67,10 @@ export function MobileMenu() {
           <span className="sr-only">Toggle menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+      <SheetContent
+        side="left"
+        className="w-[300px] overflow-y-auto sm:w-[400px]"
+      >
         <SheetHeader>
           <SheetTitle>Rethinking Economics</SheetTitle>
         </SheetHeader>
@@ -119,6 +122,12 @@ export function MobileMenu() {
               ))}
             </div>
           ) : null}
+          <Separator className="my-1" />
+          <Link href="/submissions">
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Get Involved
+            </Button>
+          </Link>
 
           {/* Theme toggle */}
           <div className="flex items-center justify-between px-2">
