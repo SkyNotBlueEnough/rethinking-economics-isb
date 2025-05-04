@@ -20,6 +20,7 @@ export interface PublicationModification {
   content?: string;
   tags?: string[];
   categories?: string[];
+  thumbnailUrl?: string | null;
 }
 
 export interface AdminActionPayload {

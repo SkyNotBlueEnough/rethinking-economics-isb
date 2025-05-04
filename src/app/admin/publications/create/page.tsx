@@ -40,6 +40,7 @@ import {
 import type { CreateProfileInput } from "~/lib/types/admin";
 import { MarkdownEditor } from "~/components/ui/markdown-editor";
 import { CreateUserForm } from "~/app/admin/_components/CreateUserForm";
+import { ThumbnailUploader } from "~/components/thumbnail-uploader";
 
 // Publication types
 const PUBLICATION_TYPES = [
@@ -70,6 +71,7 @@ interface FormData {
   status: PublicationStatus;
   tags: string;
   categories: string;
+  thumbnailUrl: string | null;
 }
 
 export default function CreatePublicationPage() {
@@ -86,6 +88,7 @@ export default function CreatePublicationPage() {
     status: "published",
     tags: "",
     categories: "",
+    thumbnailUrl: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
@@ -129,6 +132,16 @@ export default function CreatePublicationPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
 
+  // Handle thumbnail upload
+  const handleThumbnailUpload = (url: string) => {
+    handleInputChange("thumbnailUrl", url);
+  };
+
+  // Handle thumbnail removal
+  const handleThumbnailRemove = () => {
+    handleInputChange("thumbnailUrl", null);
+  };
+
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +183,7 @@ export default function CreatePublicationPage() {
       status: formData.status,
       tags: tags.length > 0 ? tags : undefined,
       categories: categories.length > 0 ? categories : undefined,
+      thumbnailUrl: formData.thumbnailUrl,
     });
   };
 
@@ -186,8 +200,38 @@ export default function CreatePublicationPage() {
 
   if (isLoadingUsers) {
     return (
-      <div className="flex h-[400px] items-center justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="flex flex-col space-y-4">
+        <div className="h-10 w-48 animate-pulse rounded-md bg-muted/60" />
+        <Card>
+          <CardHeader>
+            <div className="h-7 w-40 animate-pulse rounded-md bg-muted/60" />
+            <div className="h-5 w-72 animate-pulse rounded-md bg-muted/40" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Thumbnail loading skeleton */}
+            <div className="space-y-2">
+              <div className="h-5 w-28 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-40 max-w-md animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <div className="h-5 w-20 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <div className="h-5 w-32 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-5 w-24 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <div className="h-10 w-24 animate-pulse rounded-md bg-muted/40" />
+          </CardFooter>
+        </Card>
       </div>
     );
   }
@@ -218,6 +262,26 @@ export default function CreatePublicationPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Thumbnail Uploader */}
+            <div className="space-y-2">
+              <Label htmlFor="thumbnail">
+                Thumbnail{" "}
+                <span className="text-muted-foreground">(Optional)</span>
+              </Label>
+              <ThumbnailUploader
+                initialThumbnailUrl={formData.thumbnailUrl}
+                onUploadComplete={handleThumbnailUpload}
+                onRemove={handleThumbnailRemove}
+                thumbnailClassName="max-w-full h-auto max-h-64 w-full"
+              />
+              <div className="text-xs text-muted-foreground">
+                Upload a thumbnail image for this publication. Recommended size:
+                1200x630 pixels.
+              </div>
+            </div>
+
+            <Separator />
+
             {/* Author Selection */}
             <div className="space-y-2">
               <Label htmlFor="authorId">Author</Label>

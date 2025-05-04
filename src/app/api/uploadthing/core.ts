@@ -63,6 +63,26 @@ export const ourFileRouter = {
       // Return data that will be sent to the client
       return { imageUrl: file.url };
     }),
+
+  // Publication thumbnail uploader
+  thumbnailUploader: f({ image: { maxFileSize: "32MB", maxFileCount: 1 } })
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const { userId } = getAuth(req);
+
+      // If you throw, the user will not be able to upload
+      if (!userId) throw new Error("Unauthorized");
+
+      return { userId };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Thumbnail upload complete for userId:", metadata.userId);
+      console.log("Thumbnail URL:", file.url);
+
+      // Return data that will be sent to the client
+      return { thumbnailUrl: file.url };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

@@ -31,6 +31,7 @@ import {
   MarkdownEditor,
   MarkdownEditorSkeleton,
 } from "~/components/ui/markdown-editor";
+import { ThumbnailUploader } from "~/components/thumbnail-uploader";
 
 // Publication types
 const PUBLICATION_TYPES = [
@@ -62,6 +63,7 @@ interface FormData {
   status: PublicationStatus;
   tags: string;
   categories: string;
+  thumbnailUrl: string | null;
 }
 
 export default function EditPublicationPage() {
@@ -78,6 +80,7 @@ export default function EditPublicationPage() {
     status: "published",
     tags: "",
     categories: "",
+    thumbnailUrl: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -106,6 +109,7 @@ export default function EditPublicationPage() {
         categories:
           publication.categories?.map((category) => category.name).join(", ") ??
           "",
+        thumbnailUrl: publication.thumbnailUrl ?? null,
       });
       setInitialLoading(false);
     }
@@ -130,6 +134,16 @@ export default function EditPublicationPage() {
   ): void {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }
+
+  // Handle thumbnail upload
+  const handleThumbnailUpload = (url: string) => {
+    handleInputChange("thumbnailUrl", url);
+  };
+
+  // Handle thumbnail removal
+  const handleThumbnailRemove = () => {
+    handleInputChange("thumbnailUrl", null);
+  };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -173,6 +187,7 @@ export default function EditPublicationPage() {
       status: formData.status,
       tags: tags.length > 0 ? tags : undefined,
       categories: categories.length > 0 ? categories : undefined,
+      thumbnailUrl: formData.thumbnailUrl,
     });
   };
 
@@ -186,6 +201,12 @@ export default function EditPublicationPage() {
             <div className="h-5 w-72 animate-pulse rounded-md bg-muted/40" />
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Thumbnail loading skeleton */}
+            <div className="space-y-2">
+              <div className="h-5 w-28 animate-pulse rounded-md bg-muted/60" />
+              <div className="h-40 max-w-md animate-pulse rounded-md bg-muted/40" />
+            </div>
+            <Separator />
             <div className="space-y-2">
               <div className="h-5 w-20 animate-pulse rounded-md bg-muted/60" />
               <div className="h-10 w-full animate-pulse rounded-md bg-muted/40" />
@@ -260,6 +281,26 @@ export default function EditPublicationPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Thumbnail Uploader */}
+            <div className="space-y-2">
+              <Label htmlFor="thumbnail">
+                Thumbnail{" "}
+                <span className="text-muted-foreground">(Optional)</span>
+              </Label>
+              <ThumbnailUploader
+                initialThumbnailUrl={formData.thumbnailUrl}
+                onUploadComplete={handleThumbnailUpload}
+                onRemove={handleThumbnailRemove}
+                thumbnailClassName="max-w-full h-auto max-h-64 w-full"
+              />
+              <div className="text-xs text-muted-foreground">
+                Upload a thumbnail image for this publication. Recommended size:
+                1200x630 pixels.
+              </div>
+            </div>
+
+            <Separator />
+
             {/* Author Selection */}
             <div className="space-y-2">
               <Label htmlFor="authorId">Author</Label>

@@ -26,6 +26,7 @@ export const publicationModificationSchema = z.object({
   content: z.string().optional(),
   tags: z.array(z.string()).optional(),
   categories: z.array(z.string()).optional(),
+  thumbnailUrl: z.string().nullable().optional(),
 });
 
 export const adminRouter = createTRPCRouter({
@@ -208,6 +209,10 @@ export const adminRouter = createTRPCRouter({
 
           if (input.modifications.content) {
             updateData.content = input.modifications.content;
+          }
+
+          if (input.modifications.thumbnailUrl !== undefined) {
+            updateData.thumbnailUrl = input.modifications.thumbnailUrl;
           }
 
           // Update the publication with modifications
@@ -475,6 +480,7 @@ export const adminRouter = createTRPCRouter({
           .optional(),
         tags: z.array(z.string()).optional(),
         categories: z.array(z.string()).optional(),
+        thumbnailUrl: z.string().nullable().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -530,6 +536,10 @@ export const adminRouter = createTRPCRouter({
 
         if (input.authorId) {
           updateData.authorId = input.authorId;
+        }
+
+        if (input.thumbnailUrl !== undefined) {
+          updateData.thumbnailUrl = input.thumbnailUrl;
         }
 
         // Update the publication if we have any fields to update
@@ -633,6 +643,7 @@ export const adminRouter = createTRPCRouter({
           .default("published"),
         tags: z.array(z.string()).optional(),
         categories: z.array(z.string()).optional(),
+        thumbnailUrl: z.string().nullable().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -689,6 +700,7 @@ export const adminRouter = createTRPCRouter({
             authorId: input.authorId,
             status: input.status,
             publishedAt: input.status === "published" ? new Date() : null,
+            thumbnailUrl: input.thumbnailUrl,
           })
           .returning();
 

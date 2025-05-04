@@ -20,6 +20,9 @@ const config = {
 			{
 				hostname: "i.ibb.co",
 			},
+			{
+				hostname: "utfs.io",
+			},
 		],
 	},
 	eslint: {
