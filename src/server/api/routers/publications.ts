@@ -93,7 +93,10 @@ export const publicationsRouter = createTRPCRouter({
         .values({
           type: input.type,
           title: input.title,
-          slug: input.title.toLowerCase().replace(/\s+/g, "-"),
+          slug: input.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, ""),
           content: input.content,
           authorId: user.id,
           status: "pending_review", // Hardcoded status for user submissions
