@@ -304,27 +304,33 @@ export default function EditPublicationPage() {
             {/* Author Selection */}
             <div className="space-y-2">
               <Label htmlFor="authorId">Author</Label>
-              <Select
-                value={formData.authorId}
-                onValueChange={(value) => handleInputChange("authorId", value)}
-              >
-                <SelectTrigger id="authorId">
-                  <SelectValue placeholder="Select author" />
-                </SelectTrigger>
-                <SelectContent>
-                  {users && users.length > 0 ? (
-                    users.map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.name ?? user.id}
+              {users && (
+                <Select
+                  key={`author-select-${formData.authorId}`}
+                  value={formData.authorId}
+                  onValueChange={(value) =>
+                    handleInputChange("authorId", value)
+                  }
+                  defaultValue={formData.authorId}
+                >
+                  <SelectTrigger id="authorId">
+                    <SelectValue placeholder="Select author" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.length > 0 ? (
+                      users.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.name ?? user.id}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="" disabled>
+                        No users available
                       </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="" disabled>
-                      No users available
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             <Separator />
@@ -333,10 +339,12 @@ export default function EditPublicationPage() {
             <div className="space-y-2">
               <Label htmlFor="type">Publication Type</Label>
               <Select
+                key={`type-select-${formData.type}`}
                 value={formData.type}
                 onValueChange={(value: PublicationType) =>
                   handleInputChange("type", value)
                 }
+                defaultValue={formData.type}
               >
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select type" />
@@ -355,10 +363,12 @@ export default function EditPublicationPage() {
             <div className="space-y-2">
               <Label htmlFor="status">Publication Status</Label>
               <Select
+                key={`status-select-${formData.status}`}
                 value={formData.status}
                 onValueChange={(value: PublicationStatus) =>
                   handleInputChange("status", value)
                 }
+                defaultValue={formData.status}
               >
                 <SelectTrigger id="status">
                   <SelectValue placeholder="Select status" />
@@ -409,6 +419,7 @@ export default function EditPublicationPage() {
             <div className="space-y-2">
               <Label htmlFor="content">Content</Label>
               <MarkdownEditor
+                key={`markdown-editor-${initialLoading ? "loading" : "loaded"}`}
                 content={formData.content}
                 onChange={(value) => handleInputChange("content", value)}
                 placeholder="Write your publication content here using markdown formatting..."

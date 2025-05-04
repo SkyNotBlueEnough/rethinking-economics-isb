@@ -106,6 +106,13 @@ export const MarkdownEditor = ({
     },
   });
 
+  // Update content when it changes externally
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
+
   const [linkUrl, setLinkUrl] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
   const [imageUploadLoading, setImageUploadLoading] = React.useState(false);
