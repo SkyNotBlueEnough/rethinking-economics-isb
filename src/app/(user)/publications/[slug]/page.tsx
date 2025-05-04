@@ -25,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { toast } from "sonner";
 
 // Content renderer component that safely handles HTML content from trusted sources
 // We use dangerouslySetInnerHTML because we need to render HTML content from the markdown editor
@@ -39,7 +40,7 @@ const ContentRenderer = ({ content }: { content: string }) => {
 
   return (
     <div
-      className="prose-custom prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none"
+      className="prose prose-sm prose-custom max-w-none dark:prose-invert sm:prose-base lg:prose-lg"
       // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
       dangerouslySetInnerHTML={{ __html: content }}
     />
@@ -102,7 +103,17 @@ const SocialShareButtons = ({ title }: { title: string }) => {
               variant="outline"
               size="icon"
               className="h-8 w-8 rounded-full"
-              onClick={handleShare}
+              onClick={async () => {
+                if (navigator.share) {
+                  await navigator.share({
+                    title: title,
+                    url: shareUrl,
+                  });
+                } else {
+                  await navigator.clipboard.writeText(shareUrl);
+                  toast.success("Link copied to clipboard!");
+                }
+              }}
             >
               <Share2 className="h-4 w-4" />
               <span className="sr-only">Share</span>
@@ -110,24 +121,6 @@ const SocialShareButtons = ({ title }: { title: string }) => {
           </TooltipTrigger>
           <TooltipContent>
             <div>Share this article</div>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 rounded-full"
-            >
-              <Bookmark className="h-4 w-4" />
-              <span className="sr-only">Bookmark</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <div>Save for later</div>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -255,7 +248,7 @@ export default function ArticlePage() {
         )}
 
         {/* Article Content */}
-        <div className="prose-custom prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none">
+        <div className="prose prose-sm prose-custom max-w-none dark:prose-invert sm:prose-base lg:prose-lg">
           <ContentRenderer content={article.content ?? ""} />
         </div>
 
