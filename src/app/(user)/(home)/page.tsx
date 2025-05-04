@@ -41,7 +41,7 @@ export default function Home() {
 
   // Split featured publications for desktop view
   const leftColumnArticles = featuredPublicationsData.slice(0, 2);
-  const centerArticle = featuredPublicationsData[2];
+  const centerArticle = featuredPublicationsData[0];
 
   // Define the publication types we want to display
   // We'll use the predefined types rather than relying on the API response

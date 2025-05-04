@@ -34,6 +34,7 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { CreateUserForm } from "~/app/admin/_components/CreateUserForm";
+import { toast } from "sonner";
 
 // UserTable Loading Skeleton
 function UserTableSkeleton() {
@@ -69,8 +70,8 @@ function UserTableSkeleton() {
             </TableCell>
             <TableCell>
               <div className="flex space-x-2">
-                <div className="h-8 w-16 animate-pulse rounded bg-muted" />
-                <div className="h-8 w-16 animate-pulse rounded bg-muted" />
+                <div className="h-8 w-24 animate-pulse rounded bg-muted" />
+                <div className="h-8 w-32 animate-pulse rounded bg-muted" />
               </div>
             </TableCell>
           </TableRow>
@@ -95,9 +96,30 @@ export default function AdminUsersPage() {
     search: searchQuery,
   });
 
+  // Toggle admin access mutation
+  const toggleAdminAccess = api.admin.toggleUserAdminAccess.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        `${data?.name || "User"} ${data?.isTeamMember ? "granted" : "revoked"} admin access`,
+      );
+      void refetch();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update admin access");
+    },
+  });
+
   // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+  };
+
+  // Handle toggling admin access
+  const handleToggleAdminAccess = (
+    userId: string,
+    isCurrentlyAdmin: boolean,
+  ) => {
+    toggleAdminAccess.mutate({ userId });
   };
 
   return (
@@ -209,6 +231,30 @@ export default function AdminUsersPage() {
                             }
                           >
                             Create Article
+                          </Button>
+                          <Button
+                            variant={
+                              user.isTeamMember ? "destructive" : "secondary"
+                            }
+                            size="sm"
+                            onClick={() =>
+                              handleToggleAdminAccess(
+                                user.id,
+                                !!user.isTeamMember,
+                              )
+                            }
+                            disabled={
+                              toggleAdminAccess.isPending &&
+                              toggleAdminAccess.variables?.userId === user.id
+                            }
+                          >
+                            {toggleAdminAccess.isPending &&
+                            toggleAdminAccess.variables?.userId === user.id ? (
+                              <LoadingSpinner className="mr-2 h-4 w-4 stroke-current" />
+                            ) : null}
+                            {user.isTeamMember
+                              ? "Revoke Admin"
+                              : "Give Admin Access"}
                           </Button>
                         </div>
                       </TableCell>

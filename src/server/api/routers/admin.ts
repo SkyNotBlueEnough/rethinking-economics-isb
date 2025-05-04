@@ -870,4 +870,62 @@ export const adminRouter = createTRPCRouter({
         return { success: true };
       });
     }),
+
+  // Toggle a user's admin access (isTeamMember)
+  toggleUserAdminAccess: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Get user ID from the context
+      const userId = ctx.user?.id;
+
+      if (!userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      // Check if user is admin
+      const isAdmin = await checkUserIsAdmin(userId);
+      if (!isAdmin) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Only admins can modify user access",
+        });
+      }
+
+      // Get the target user
+      const targetUser = await db
+        .select()
+        .from(profiles)
+        .where(eq(profiles.id, input.userId))
+        .limit(1);
+
+      if (targetUser.length === 0) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      // Toggle the isTeamMember value
+      const currentStatus = targetUser[0]?.isTeamMember;
+      const newStatus = !currentStatus;
+
+      // Update the user's isTeamMember status
+      const [updatedUser] = await db
+        .update(profiles)
+        .set({
+          isTeamMember: newStatus,
+          updatedAt: new Date(),
+        })
+        .where(eq(profiles.id, input.userId))
+        .returning();
+
+      return updatedUser;
+    }),
 });
